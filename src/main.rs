@@ -14,11 +14,14 @@ async fn home() -> ::topcoat::Result {
         <!DOCTYPE html>
         <html>
             <head>
-                <title>"Hello world"</title>
+                <meta charset="utf-8" />
+                <title>"tofu"</title>
                 ::topcoat::dev::script()
             </head>
             <body>
+                <h1>"tofu"</h1>
                 hello(name: "World")
+                sidebar()
             </body>
         </html>
     }
@@ -27,6 +30,36 @@ async fn home() -> ::topcoat::Result {
 #[::topcoat::view::component]
 async fn hello(name: &str) -> ::topcoat::Result {
     ::topcoat::view::view! {
-        <h1>"Hello, " (name) "!"</h1>
+        <h1>
+            "Hello, "
+            (name)
+            "!"
+        </h1>
+    }
+}
+
+#[::topcoat::view::component]
+async fn sidebar() -> ::topcoat::Result {
+    let url = "https://bouzuya.net/";
+    ::topcoat::view::view! {
+        <ul>
+            <li><a href="/">"Home"</a></li>
+            <li><a href=(url)>"bouzuya.net"</a></li>
+            for i in 1..=10 {
+                <li>
+                    <a href=(format!("/hello/{}", i))>
+                        if i % 3 == 0 && i % 5 == 0 {
+                            "FizzBuzz"
+                        } else if i % 3 == 0 {
+                            "Fizz"
+                        } else if i % 5 == 0 {
+                            "Buzz"
+                        } else {
+                            (i)
+                        }
+                    </a>
+                </li>
+            }
+        </ul>
     }
 }
