@@ -36,8 +36,21 @@ async fn home() -> ::topcoat::Result {
                 bool_attr(disabled: true)
                 option_attr()
                 (CustomNodeViewParts("Custom view parts".to_string()))
+                badge(label: "New", tone: "success")
+                <div>count(items: vec!["a", "b", "c"])</div>
+                <div>count(items: vec![1, 2, 3, 4, 5])</div>
+                current_path()
+                trampoline1(n: 10)
             </body>
         </html>
+    }
+}
+
+// #[into] v: T ... v: impl Into<T>
+#[::topcoat::view::component]
+async fn badge(#[into] label: String, tone: &str) -> ::topcoat::Result {
+    ::topcoat::view::view! {
+        <span class=(format!("badge badge-{}", tone))>(label)</span>
     }
 }
 
@@ -54,6 +67,16 @@ async fn child_prop(label: &str, child: ::topcoat::view::View) -> ::topcoat::Res
             <div class="value">(child)</div>
         </div>
     }
+}
+
+#[::topcoat::view::component]
+async fn count<T: Send + Sync>(items: Vec<T>) -> ::topcoat::Result {
+    ::topcoat::view::view! { <span>(items.len())</span> }
+}
+
+#[::topcoat::view::component]
+async fn current_path(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+    ::topcoat::view::view! { <span>(::topcoat::router::uri(cx).path())</span> }
 }
 
 #[::topcoat::view::component]
@@ -189,6 +212,36 @@ async fn sidebar() -> ::topcoat::Result {
                 </li>
             }
         </ul>
+    }
+}
+
+#[::topcoat::view::component(boxed)]
+async fn trampoline1(n: i32) -> ::topcoat::Result {
+    ::topcoat::view::view! {
+        <div>
+            "trampoline1"
+            <p>(n)</p>
+            if n > 0 {
+                trampoline2(n: n - 1)
+            } else {
+                <p>"Done"</p>
+            }
+        </div>
+    }
+}
+
+#[::topcoat::view::component(boxed)]
+async fn trampoline2(n: i32) -> ::topcoat::Result {
+    ::topcoat::view::view! {
+        <div>
+            "trampoline2"
+            <p>(n)</p>
+            if n > 0 {
+                trampoline1(n: n - 1)
+            } else {
+                <p>"Done"</p>
+            }
+        </div>
     }
 }
 
