@@ -46,6 +46,7 @@ async fn home() -> ::topcoat::Result {
                     attrs: ::topcoat::view::attributes! { class="my-section" },
                     <p>"My section"</p>
                 )
+                class_macro()
             </body>
         </html>
     }
@@ -95,6 +96,25 @@ async fn child_prop(label: &str, child: ::topcoat::view::View) -> ::topcoat::Res
             <div class="label">(label)</div>
             <div class="value">(child)</div>
         </div>
+    }
+}
+
+#[::topcoat::view::component]
+async fn class_macro() -> ::topcoat::Result {
+    let variant = Some("primary");
+    let classes = vec!["small", "large"];
+    let enabled = true;
+    ::topcoat::view::view! {
+        <button
+            class=(::topcoat::view::class! {
+                "button",
+                variant,
+                classes,
+                "enabled" if enabled else "disabled",
+            })
+        >
+            "button"
+        </button>
     }
 }
 
