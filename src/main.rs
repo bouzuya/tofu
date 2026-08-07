@@ -41,9 +41,38 @@ async fn home() -> ::topcoat::Result {
                 <div>count(items: vec![1, 2, 3, 4, 5])</div>
                 current_path()
                 trampoline1(n: 10)
+                attributes()
+                my_section(
+                    attrs: ::topcoat::view::attributes! { class="my-section" },
+                    <p>"My section"</p>
+                )
             </body>
         </html>
     }
+}
+
+#[::topcoat::view::component]
+async fn attributes() -> ::topcoat::Result {
+    let id = "button-id";
+    let attrs = ::topcoat::view::attributes! {
+        class="button"
+        id=(id)
+        :data-bound=$(id.to_owned())
+        @input="(e) => console.log(e)"
+        if id == "submit" {
+            type="submit"
+        } else {
+            type="button"
+        }
+        for (name, value) in [("foo", "1"), ("bar", "2"), ("baz", "3")] {
+            (name)=(value)
+        }
+        match id {
+            "submit" => aria-label="Submit",
+            _ => aria-label="Button",
+        }
+    };
+    ::topcoat::view::view! { <button (attrs)>"button"</button> }
 }
 
 // #[into] v: T ... v: impl Into<T>
@@ -182,6 +211,14 @@ async fn match_expr(fruit: Fruit) -> ::topcoat::Result {
             Fruit::Cherry => <p>"Dark red"</p>,
         }
     }
+}
+
+#[::topcoat::view::component]
+async fn my_section(
+    attrs: ::topcoat::view::Attributes,
+    child: ::topcoat::view::View,
+) -> ::topcoat::Result {
+    ::topcoat::view::view! { <section (attrs)>(child)</section> }
 }
 
 #[::topcoat::view::component]
