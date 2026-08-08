@@ -15,40 +15,30 @@ async fn home() -> ::topcoat::Result {
         let user = User {
             name: "bouzuya".to_string(),
         };
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <meta charset="utf-8" />
-                <title>"tofu"</title>
-                ::topcoat::dev::script()
-            </head>
-            <body>
-                <h1>"tofu"</h1>
-                hello(name: "World")
-                sidebar()
-                custom_element()
-                user_name(user: &user)
-                if_expr(is_open: true)
-                for_expr()
-                match_expr(fruit: Fruit::Banana)
-                let_stmt()
-                child_prop(label: "Label", <span>"Child"</span>)
-                bool_attr(disabled: true)
-                option_attr()
-                (CustomNodeViewParts("Custom view parts".to_string()))
-                badge(label: "New", tone: "success")
-                <div>count(items: vec!["a", "b", "c"])</div>
-                <div>count(items: vec![1, 2, 3, 4, 5])</div>
-                current_path()
-                trampoline1(n: 10)
-                attributes()
-                my_section(
-                    attrs: ::topcoat::view::attributes! { class="my-section" },
-                    <p>"My section"</p>
-                )
-                class_macro()
-            </body>
-        </html>
+        <h1>"tofu"</h1>
+        hello(name: "World")
+        sidebar()
+        custom_element()
+        user_name(user: &user)
+        if_expr(is_open: true)
+        for_expr()
+        match_expr(fruit: Fruit::Banana)
+        let_stmt()
+        child_prop(label: "Label", <span>"Child"</span>)
+        bool_attr(disabled: true)
+        option_attr()
+        (CustomNodeViewParts("Custom view parts".to_string()))
+        badge(label: "New", tone: "success")
+        <div>count(items: vec!["a", "b", "c"])</div>
+        <div>count(items: vec![1, 2, 3, 4, 5])</div>
+        current_path()
+        trampoline1(n: 10)
+        attributes()
+        my_section(
+            attrs: ::topcoat::view::attributes! { class="my-section" },
+            <p>"My section"</p>
+        )
+        class_macro()
     }
 }
 
@@ -181,6 +171,18 @@ async fn hello(name: &str) -> ::topcoat::Result {
     }
 }
 
+#[::topcoat::router::path_param(error = not_found)]
+struct Name(String);
+
+#[::topcoat::router::page("/hello/{name}")]
+async fn hello_page(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+    let name = ::topcoat::router::path_param::<Name>(cx)?;
+    ::topcoat::view::view! {
+        (::topcoat::router::StatusCode::OK)
+        hello(name: name)
+    }
+}
+
 #[::topcoat::view::component]
 async fn if_expr(is_open: bool) -> ::topcoat::Result {
     ::topcoat::view::view! {
@@ -244,6 +246,34 @@ async fn my_section(
 #[::topcoat::view::component]
 async fn option_attr() -> ::topcoat::Result {
     ::topcoat::view::view! { <p class=(Some("active"))>"Hello"</p> }
+}
+
+#[::topcoat::router::layout("/")]
+async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
+    ::topcoat::view::view! {
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="utf-8" />
+                <title>"tofu"</title>
+                ::topcoat::dev::script()
+            </head>
+            <body>(slot?)</body>
+        </html>
+    }
+}
+
+#[::topcoat::router::layer("/")]
+async fn log_layer(
+    cx: &mut ::topcoat::context::CxBuilder,
+    body: ::topcoat::router::Body,
+    next: ::topcoat::router::Next<'_>,
+) -> ::topcoat::Result<::topcoat::router::Response> {
+    let start = std::time::Instant::now();
+    let response = next.run(cx, body).await?;
+    let status = response.status();
+    println!("-> {} ({:?})", status, start.elapsed());
+    Ok(response)
 }
 
 #[::topcoat::view::component]
