@@ -1,3 +1,4 @@
+mod api;
 mod example;
 mod hello;
 
@@ -14,6 +15,19 @@ async fn root() -> ::topcoat::Result {
 
 #[::topcoat::router::layout]
 async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
+    let content = match slot {
+        Err(error)
+            if error
+                .downcast_ref::<::topcoat::router::error::NotFoundError>()
+                .is_some() =>
+        {
+            ::topcoat::view::view! {
+                (::topcoat::router::StatusCode::NOT_FOUND)
+                "Not Found"
+            }
+        }
+        content => content,
+    }?;
     ::topcoat::view::view! {
         <!DOCTYPE html>
         <html>
@@ -22,7 +36,7 @@ async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
                 <title>"tofu"</title>
                 ::topcoat::dev::script()
             </head>
-            <body>(slot?)</body>
+            <body>(content)</body>
         </html>
     }
 }

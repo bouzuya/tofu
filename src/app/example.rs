@@ -1,11 +1,18 @@
+#[::topcoat::router::query_params(error = bad_request)]
+struct HomeQueryParams {
+    q: Option<String>,
+}
+
 #[::topcoat::router::page]
-async fn home() -> ::topcoat::Result {
+async fn home(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+    let query = ::topcoat::router::query_params::<HomeQueryParams>(cx)?;
     ::topcoat::view::view! {
         (::topcoat::router::StatusCode::OK)
         let user = User {
             name: "bouzuya".to_string(),
         };
         <h1>"tofu"</h1>
+        (query.q.as_deref().unwrap_or_default())
         sidebar()
         custom_element()
         user_name(user: &user)
