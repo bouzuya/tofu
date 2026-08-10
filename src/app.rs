@@ -1,9 +1,20 @@
+use std::sync::{Mutex, atomic::AtomicU16};
+
 mod api;
+mod context;
 mod example;
 mod hello;
 
+struct AppContext {
+    pub count: AtomicU16,
+}
+
 pub fn router() -> ::topcoat::router::Router {
-    ::topcoat::router::module_router!().build()
+    ::topcoat::router::module_router!()
+        .app_context(AppContext {
+            count: AtomicU16::new(0),
+        })
+        .build()
 }
 
 #[::topcoat::router::page]
