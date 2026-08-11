@@ -12,13 +12,37 @@ async fn context(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let extensions = ::topcoat::router::extensions(cx);
     ::topcoat::view::view! {
         <h1>"Context"</h1>
-        <p>"count: "(format!("{:?}", count))</p>
-        <p>"parts: "(format!("{:?}", parts))</p>
-        <p>"method: "(format!("{:?}", method))</p>
-        <p>"uri: "(format!("{:?}", uri))</p>
-        <p>"version: "(format!("{:?}", version))</p>
-        <p>"headers: "(format!("{:?}", headers))</p>
-        <p>"content_type: "(format!("{:?}", content_type))</p>
-        <p>"extensions: "(format!("{:?}", extensions))</p>
+        <p>
+            "count: "
+            (format!("{:?}", count))
+        </p>
+        <p>
+            "parts: "
+            (format!("{:?}", parts))
+        </p>
+        <p>
+            "method: "
+            (format!("{:?}", method))
+        </p>
+        <p>
+            "uri: "
+            (format!("{:?}", uri))
+        </p>
+        <p>
+            "version: "
+            (format!("{:?}", version))
+        </p>
+        <p>
+            "headers: "
+            (format!("{:?}", headers))
+        </p>
+        <p>
+            "content_type: "
+            (format!("{:?}", content_type))
+        </p>
+        <p>
+            "extensions: "
+            (format!("{:?}", extensions))
+        </p>
     }
 }

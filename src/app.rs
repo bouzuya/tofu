@@ -1,4 +1,4 @@
-use std::sync::{Mutex, atomic::AtomicU16};
+use std::sync::atomic::AtomicU16;
 
 mod api;
 mod context;
@@ -19,9 +19,7 @@ pub fn router() -> ::topcoat::router::Router {
 
 #[::topcoat::router::page]
 async fn root() -> ::topcoat::Result {
-    ::topcoat::view::view! {
-        <p>"OK"</p>
-    }
+    ::topcoat::view::view! { <p>"OK"</p> }
 }
 
 #[::topcoat::router::layout]

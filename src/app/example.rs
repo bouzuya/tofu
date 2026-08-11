@@ -1,3 +1,13 @@
+use topcoat::router::error::RouterErrorExt;
+
+#[::topcoat::context::memoize]
+async fn load_user_from_db(cx: &::topcoat::context::Cx, user_id: u32) -> ::topcoat::Result<User> {
+    ::tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+    Ok(User {
+        name: format!("User {}", user_id),
+    })
+}
+
 #[::topcoat::router::query_params(error = bad_request)]
 struct HomeQueryParams {
     q: Option<String>,
@@ -5,6 +15,7 @@ struct HomeQueryParams {
 
 #[::topcoat::router::page]
 async fn home(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+    let memoize_user = load_user_from_db(cx, 123).await.ok_or_unauthorized()?;
     let query = ::topcoat::router::query_params::<HomeQueryParams>(cx)?;
     ::topcoat::view::view! {
         (::topcoat::router::StatusCode::OK)
@@ -12,6 +23,8 @@ async fn home(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             name: "bouzuya".to_string(),
         };
         <h1>"tofu"</h1>
+        (memoize_user.name.to_owned())
+        memoize_()
         (query.q.as_deref().unwrap_or_default())
         sidebar()
         custom_element()
@@ -205,6 +218,18 @@ async fn match_expr(fruit: Fruit) -> ::topcoat::Result {
             Fruit::Banana => <p>"Yellow"</p>,
             Fruit::Cherry => <p>"Dark red"</p>,
         }
+    }
+}
+
+#[::topcoat::view::component]
+async fn memoize_(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+    let user = load_user_from_db(cx, 123).await.ok_or_unauthorized()?;
+    ::topcoat::view::view! {
+        <p>
+            "User name: "
+            (user.name.clone())
+            "(memoize)"
+        </p>
     }
 }
 
