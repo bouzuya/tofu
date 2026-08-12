@@ -3,6 +3,7 @@ use std::sync::atomic::AtomicU16;
 mod api;
 mod context;
 mod example;
+mod examples;
 mod hello;
 
 struct AppContext {
@@ -10,10 +11,13 @@ struct AppContext {
 }
 
 pub fn router() -> ::topcoat::router::Router {
+    use topcoat::cookie::RouterBuilderCookieExt as _;
+
     ::topcoat::router::module_router!()
         .app_context(AppContext {
             count: AtomicU16::new(0),
         })
+        .cookies()
         .build()
 }
 
