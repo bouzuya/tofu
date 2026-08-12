@@ -2,7 +2,11 @@
 async fn page(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     use topcoat::cookie::Cookies as _;
 
-    let jar = my_cookies(cx);
+    let key = ::topcoat::context::app_context::<crate::app::AppContext>(cx)
+        .cookie_key
+        .clone();
+    let jar = ::topcoat::cookie::cookies(cx).signed(&key);
+    // let jar = my_cookies(cx);
 
     jar.add(
         ::topcoat::cookie::Cookie::build(("foo", "bar"))

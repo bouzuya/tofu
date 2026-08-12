@@ -7,6 +7,7 @@ mod examples;
 mod hello;
 
 struct AppContext {
+    pub cookie_key: ::topcoat::cookie::Key,
     pub count: AtomicU16,
 }
 
@@ -15,6 +16,7 @@ pub fn router() -> ::topcoat::router::Router {
 
     ::topcoat::router::module_router!()
         .app_context(AppContext {
+            cookie_key: ::topcoat::cookie::Key::generate(),
             count: AtomicU16::new(0),
         })
         .cookies()
