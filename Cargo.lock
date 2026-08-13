@@ -1355,6 +1355,7 @@ dependencies = [
 name = "tofu"
 version = "0.0.0"
 dependencies = [
+ "serde",
  "tokio",
  "topcoat",
 ]

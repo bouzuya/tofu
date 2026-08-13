@@ -4,5 +4,6 @@ name = "tofu"
 publish = false
 
 [dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
 tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros"] }
 topcoat = "0.5.0"
