@@ -12,12 +12,14 @@ struct AppContext {
 
 pub fn router() -> ::topcoat::router::Router {
     use topcoat::cookie::RouterBuilderCookieExt as _;
+    use topcoat::session::RouterBuilderSessionExt as _;
 
     ::topcoat::router::module_router!()
         .app_context(AppContext {
             count: AtomicU16::new(0),
         })
         .cookies()
+        .sessions(::topcoat::session::SessionConfig::default())
         .app_context(::topcoat::cookie::Key::generate())
         .build()
 }
