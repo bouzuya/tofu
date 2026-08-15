@@ -5,6 +5,7 @@ mod context;
 mod example;
 mod examples;
 mod hello;
+mod u;
 
 struct AppContext {
     pub count: AtomicU16,
