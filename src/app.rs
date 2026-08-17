@@ -8,15 +8,17 @@ mod hello;
 mod u;
 
 struct AppContext {
+    pub blocks: Vec<super::Block>,
     pub count: AtomicU16,
 }
 
-pub fn router() -> ::topcoat::router::Router {
+pub fn router(blocks: Vec<super::Block>) -> ::topcoat::router::Router {
     use topcoat::cookie::RouterBuilderCookieExt as _;
     use topcoat::session::RouterBuilderSessionExt as _;
 
     ::topcoat::router::module_router!()
         .app_context(AppContext {
+            blocks,
             count: AtomicU16::new(0),
         })
         .cookies()
