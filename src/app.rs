@@ -10,9 +10,13 @@ mod u;
 struct AppContext {
     pub blocks: Vec<super::Block>,
     pub count: AtomicU16,
+    pub names_list: std::collections::HashMap<u32, String>,
 }
 
-pub fn router(blocks: Vec<super::Block>) -> ::topcoat::router::Router {
+pub fn router(
+    blocks: Vec<super::Block>,
+    names_list: std::collections::HashMap<u32, String>,
+) -> ::topcoat::router::Router {
     use topcoat::cookie::RouterBuilderCookieExt as _;
     use topcoat::session::RouterBuilderSessionExt as _;
 
@@ -20,6 +24,7 @@ pub fn router(blocks: Vec<super::Block>) -> ::topcoat::router::Router {
         .app_context(AppContext {
             blocks,
             count: AtomicU16::new(0),
+            names_list,
         })
         .cookies()
         .sessions(::topcoat::session::SessionConfig::default())

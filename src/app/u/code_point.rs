@@ -6,7 +6,7 @@ struct CodePoint(String);
 #[::topcoat::router::page]
 async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let code_point_value = ::topcoat::router::path_param::<CodePoint>(cx)?;
-    let code_point_value = code_point_value
+    let char_ = code_point_value
         .chars()
         .all(|c| matches!(c, '0'..='9' | 'a'..='f' | 'A'..='F'))
         .then(|| code_point_value)
@@ -18,13 +18,17 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let block = app_context
         .blocks
         .iter()
-        .find(|block| block.code_range.contains(&(code_point_value as u32)))
+        .find(|block| block.code_range.contains(&(char_ as u32)))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
         <h1>"Code Point"</h1>
         <p>
             "code_point: "
-            (format!("{:?}", code_point_value))
+            "U+"(code_point_value)
+        </p>
+        <p>
+            "name: "
+            (format!("{}", app_context.names_list.get(&(char_ as u32)).unwrap_or(&"<unknown>".to_string())))
         </p>
         <p>
             "block: "
