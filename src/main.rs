@@ -47,8 +47,9 @@ async fn fetch_blocks() -> Result<Vec<Block>, Box<dyn std::error::Error + Send +
     Ok(blocks)
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 struct CharEntry {
+    aliases: Vec<String>,
     code_point: u32,
     name: String,
 }
@@ -58,7 +59,10 @@ async fn fetch_names_list()
     let response =
         ::reqwest::get("https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt").await?;
     let text = response.text().await?;
+    Ok(parse_names_list(&text))
+}
 
+fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
     let mut names = std::collections::HashMap::<u32, CharEntry>::new();
     let mut iter = text.lines().peekable();
     while let Some(line) = iter.next() {
@@ -90,7 +94,21 @@ async fn fetch_names_list()
             continue;
         }
 
+        let mut aliases = vec![];
         while let Some(next_line) = iter.peek() {
+            if next_line.starts_with("\t=") {
+                // ALIAS_LINE:	TAB "=" SP LINE
+                match next_line.strip_prefix("\t= ") {
+                    None => {
+                        // do nothing
+                    }
+                    Some(alias) => {
+                        aliases.push(alias.to_string());
+                    }
+                }
+                iter.next();
+                continue;
+            }
             if next_line.starts_with('\t') {
                 iter.next();
                 continue;
@@ -102,17 +120,20 @@ async fn fetch_names_list()
         names.insert(
             code_point,
             CharEntry {
+                aliases,
                 code_point,
                 name: name.to_string(),
             },
         );
     }
 
-    Ok(names)
+    names
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::parse_names_list;
+
     #[::tokio::test]
     async fn test_fetch_blocks() -> ::anyhow::Result<()> {
         let blocks = super::fetch_blocks()
@@ -127,13 +148,40 @@ mod tests {
     }
 
     #[::tokio::test]
-    async fn test_parse_names_list() -> ::anyhow::Result<()> {
+    async fn test_fetch_names_list() -> ::anyhow::Result<()> {
         let names = super::fetch_names_list()
             .await
             .map_err(|e| ::anyhow::anyhow!(e))?;
         let name = names.get(&u32::from('あ')).unwrap();
         println!("{:#?}", names);
         println!("{:#?}", name);
+        let name = names.get(&u32::from('&')).unwrap();
+        println!("{:#?}", name);
         Ok(())
+    }
+
+    #[test]
+    fn test_parse_names_list() {
+        let text = r#"0026	AMPERSAND
+	= and
+	* originally derived from a ligature of 'e' and 't'
+	x (tironian sign et - 204A)
+	x (turned ampersand - 214B)
+	x (heavy ampersand ornament - 1F674)
+"#;
+        assert_eq!(
+            parse_names_list(text),
+            [(
+                0x0026,
+                super::CharEntry {
+                    aliases: vec!["and".to_string(),],
+                    code_point: 0x0026,
+                    name: "AMPERSAND".to_string(),
+                }
+            )]
+            .iter()
+            .cloned()
+            .collect::<std::collections::HashMap<u32, super::CharEntry>>()
+        );
     }
 }

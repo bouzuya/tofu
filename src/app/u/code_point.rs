@@ -30,6 +30,14 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             "name: "
             (format!("{}", app_context.names_list.get(&(char_ as u32)).map(|entry| &entry.name).unwrap_or(&"<unknown>".to_string())))
         </p>
+        <div>
+            "aliases:"
+            <ul>
+                for alias in app_context.names_list.get(&(char_ as u32)).map(|entry| &entry.aliases).unwrap_or(&Vec::new()) {
+                    <li>(alias)</li>
+                }
+            </ul>
+        </div>
         <p>
             "block: "
             (format!("{}", block.block_name))
