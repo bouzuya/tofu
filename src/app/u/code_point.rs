@@ -22,6 +22,9 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
         <h1>"Code Point"</h1>
+        <p style="align-items: center; border: 2px solid #000; display: flex; flex-flow: column nowrap; font-size: 48px; height: 80px; justify-content: center; width: 80px;">
+            (format!("{}", char_))
+        </p>
         <p>
             "code_point: "
             "U+"
