@@ -24,16 +24,24 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <h1>"Code Point"</h1>
         <p>
             "code_point: "
-            "U+"(code_point_value)
+            "U+"
+            (code_point_value)
         </p>
         <p>
             "name: "
-            (format!("{}", app_context.names_list.get(&(char_ as u32)).map(|entry| &entry.name).unwrap_or(&"<unknown>".to_string())))
+            (format!(
+                "{}", app_context.names_list.get(& (char_ as u32)).map(| entry | & entry
+                .name).unwrap_or(& "<unknown>".to_string())
+            ))
         </p>
         <div>
             "aliases:"
             <ul>
-                for alias in app_context.names_list.get(&(char_ as u32)).map(|entry| &entry.aliases).unwrap_or(&Vec::new()) {
+                for alias in app_context
+                    .names_list
+                    .get(&(char_ as u32))
+                    .map(|entry| &entry.aliases)
+                    .unwrap_or(&Vec::new()) {
                     <li>(alias)</li>
                 }
             </ul>
@@ -45,8 +53,24 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div>
             "comments:"
             <ul>
-                for comment in app_context.names_list.get(&(char_ as u32)).map(|entry| &entry.comments).unwrap_or(&Vec::new()) {
+                for comment in app_context
+                    .names_list
+                    .get(&(char_ as u32))
+                    .map(|entry| &entry.comments)
+                    .unwrap_or(&Vec::new()) {
                     <li>(comment)</li>
+                }
+            </ul>
+        </div>
+        <div>
+            "cross_refs:"
+            <ul>
+                for (name, code_point) in app_context
+                    .names_list
+                    .get(&(char_ as u32))
+                    .map(|entry| &entry.cross_refs)
+                    .unwrap_or(&Vec::new()) {
+                    <li><a href=(format!("/u/{:04X}", code_point))>(format!("U+{:04X}", code_point))" "(name.to_ascii_uppercase())</a></li>
                 }
             </ul>
         </div>

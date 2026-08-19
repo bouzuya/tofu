@@ -52,6 +52,7 @@ struct CharEntry {
     aliases: Vec<String>,
     code_point: u32,
     comments: Vec<String>,
+    cross_refs: Vec<(String, u32)>,
     name: String,
 }
 
@@ -97,6 +98,7 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
 
         let mut aliases = vec![];
         let mut comments = vec![];
+        let mut cross_refs = vec![];
         while let Some(next_line) = iter.peek() {
             if next_line.starts_with("\t=") {
                 // ALIAS_LINE:	TAB "=" SP LINE
@@ -123,6 +125,25 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
                 iter.next();
                 continue;
             }
+            if next_line.starts_with("\tx (") && next_line.ends_with(")") {
+                match next_line
+                    .strip_prefix("\tx (")
+                    .and_then(|next_line| next_line.strip_suffix(")"))
+                {
+                    None => {
+                        // do nothing
+                    }
+                    Some(cross_ref) => {
+                        if let Some((name, code)) = cross_ref.rsplit_once(" - ") {
+                            if let Ok(code_point) = u32::from_str_radix(code, 16) {
+                                cross_refs.push((name.to_string(), code_point));
+                            }
+                        }
+                    }
+                }
+                iter.next();
+                continue;
+            }
             if next_line.starts_with('\t') {
                 iter.next();
                 continue;
@@ -137,6 +158,7 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
                 aliases,
                 code_point,
                 comments,
+                cross_refs,
                 name: name.to_string(),
             },
         );
@@ -192,6 +214,11 @@ mod tests {
                     aliases: vec!["and".to_string(),],
                     code_point: 0x0026,
                     comments: vec!["originally derived from a ligature of 'e' and 't'".to_string()],
+                    cross_refs: vec![
+                        ("tironian sign et".to_string(), 0x204A),
+                        ("turned ampersand".to_string(), 0x214B),
+                        ("heavy ampersand ornament".to_string(), 0x1F674),
+                    ],
                     name: "AMPERSAND".to_string(),
                 }
             )]
