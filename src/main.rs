@@ -51,6 +51,7 @@ async fn fetch_blocks() -> Result<Vec<Block>, Box<dyn std::error::Error + Send +
 struct CharEntry {
     aliases: Vec<String>,
     code_point: u32,
+    comments: Vec<String>,
     name: String,
 }
 
@@ -95,6 +96,7 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
         }
 
         let mut aliases = vec![];
+        let mut comments = vec![];
         while let Some(next_line) = iter.peek() {
             if next_line.starts_with("\t=") {
                 // ALIAS_LINE:	TAB "=" SP LINE
@@ -104,6 +106,18 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
                     }
                     Some(alias) => {
                         aliases.push(alias.to_string());
+                    }
+                }
+                iter.next();
+                continue;
+            }
+            if next_line.starts_with("\t* ") {
+                match next_line.strip_prefix("\t* ") {
+                    None => {
+                        // do nothing
+                    }
+                    Some(comment) => {
+                        comments.push(comment.to_string());
                     }
                 }
                 iter.next();
@@ -122,6 +136,7 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
             CharEntry {
                 aliases,
                 code_point,
+                comments,
                 name: name.to_string(),
             },
         );
@@ -162,13 +177,13 @@ mod tests {
 
     #[test]
     fn test_parse_names_list() {
-        let text = r#"0026	AMPERSAND
-	= and
-	* originally derived from a ligature of 'e' and 't'
-	x (tironian sign et - 204A)
-	x (turned ampersand - 214B)
-	x (heavy ampersand ornament - 1F674)
-"#;
+        let text = "0026\tAMPERSAND
+\t= and
+\t* originally derived from a ligature of 'e' and 't'
+\tx (tironian sign et - 204A)
+\tx (turned ampersand - 214B)
+\tx (heavy ampersand ornament - 1F674)
+";
         assert_eq!(
             parse_names_list(text),
             [(
@@ -176,6 +191,7 @@ mod tests {
                 super::CharEntry {
                     aliases: vec!["and".to_string(),],
                     code_point: 0x0026,
+                    comments: vec!["originally derived from a ligature of 'e' and 't'".to_string()],
                     name: "AMPERSAND".to_string(),
                 }
             )]

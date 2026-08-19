@@ -42,5 +42,13 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             "block: "
             (format!("{}", block.block_name))
         </p>
+        <div>
+            "comments:"
+            <ul>
+                for comment in app_context.names_list.get(&(char_ as u32)).map(|entry| &entry.comments).unwrap_or(&Vec::new()) {
+                    <li>(comment)</li>
+                }
+            </ul>
+        </div>
     }
 }
