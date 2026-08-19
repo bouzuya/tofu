@@ -28,7 +28,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         </p>
         <p>
             "name: "
-            (format!("{}", app_context.names_list.get(&(char_ as u32)).unwrap_or(&"<unknown>".to_string())))
+            (format!("{}", app_context.names_list.get(&(char_ as u32)).map(|entry| &entry.name).unwrap_or(&"<unknown>".to_string())))
         </p>
         <p>
             "block: "

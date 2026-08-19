@@ -47,13 +47,19 @@ async fn fetch_blocks() -> Result<Vec<Block>, Box<dyn std::error::Error + Send +
     Ok(blocks)
 }
 
+#[derive(Debug)]
+struct CharEntry {
+    code_point: u32,
+    name: String,
+}
+
 async fn fetch_names_list()
--> Result<std::collections::HashMap<u32, String>, Box<dyn std::error::Error + Send + Sync>> {
+-> Result<std::collections::HashMap<u32, CharEntry>, Box<dyn std::error::Error + Send + Sync>> {
     let response =
         ::reqwest::get("https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt").await?;
     let text = response.text().await?;
 
-    let mut names = std::collections::HashMap::<u32, String>::new();
+    let mut names = std::collections::HashMap::<u32, CharEntry>::new();
     let mut iter = text.lines().peekable();
     while let Some(line) = iter.next() {
         if line.starts_with(';') {
@@ -93,7 +99,13 @@ async fn fetch_names_list()
         }
 
         let code_point = u32::from_str_radix(char, 16).unwrap();
-        names.insert(code_point, name.to_string());
+        names.insert(
+            code_point,
+            CharEntry {
+                code_point,
+                name: name.to_string(),
+            },
+        );
     }
 
     Ok(names)
