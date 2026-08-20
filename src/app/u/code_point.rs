@@ -22,7 +22,9 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
         <h1>"Code Point"</h1>
-        <p style="align-items: center; border: 2px solid #000; display: flex; flex-flow: column nowrap; font-size: 48px; height: 80px; justify-content: center; width: 80px;">
+        <p
+            style="align-items: center; border: 2px solid #000; display: flex; flex-flow: column nowrap; font-size: 48px; height: 80px; justify-content: center; width: 80px;"
+        >
             (format!("{}", char_))
         </p>
         <p>
@@ -73,7 +75,13 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     .get(&(char_ as u32))
                     .map(|entry| &entry.cross_refs)
                     .unwrap_or(&Vec::new()) {
-                    <li><a href=(format!("/u/{:04X}", code_point))>(format!("U+{:04X}", code_point))" "(name.to_ascii_uppercase())</a></li>
+                    <li>
+                        <a href=(format!("/u/{:04X}", code_point))>
+                            (format!("U+{:04X}", code_point))
+                            " "
+                            (name.to_ascii_uppercase())
+                        </a>
+                    </li>
                 }
             </ul>
         </div>
