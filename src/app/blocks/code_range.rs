@@ -21,12 +21,11 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .find(|block| block.code_range == (start_code..=end_code))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
-        <h1>"Block"</h1>
-        <p>
+        <h1>
             (format!("U+{:04X}..U+{:04X}", start_code, end_code))
             " "
             (format!("{}", block.block_name))
-        </p>
+        </h1>
         <ul>
             for code_point in block.code_range.clone() {
                 match app_context.names_list.get(&code_point) {

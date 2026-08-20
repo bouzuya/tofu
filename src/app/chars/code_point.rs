@@ -21,13 +21,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .find(|block| block.code_range.contains(&(char_ as u32)))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
-        <h1>"Char"</h1>
-        <p
-            style="align-items: center; border: 2px solid #000; display: flex; flex-flow: column nowrap; font-size: 48px; height: 80px; justify-content: center; width: 80px;"
-        >
-            (format!("{}", char_))
-        </p>
-        <p>
+        <h1>
             "U+"
             (code_point_value)
             " "
@@ -35,6 +29,11 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 "{}", app_context.names_list.get(& (char_ as u32)).map(| entry | & entry
                 .name).unwrap_or(& "<unknown>".to_string())
             ))
+        </h1>
+        <p
+            style="align-items: center; border: 2px solid #000; display: flex; flex-flow: column nowrap; font-size: 48px; height: 80px; justify-content: center; width: 80px;"
+        >
+            (format!("{}", char_))
         </p>
         <div>
             "aliases:"
@@ -50,10 +49,16 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         </div>
         <p>
             "block: "
-            <a href=(format!(
-                "/blocks/{:04X}..{:04X}", block.code_range.start(), block.code_range.end()
-            ))>
-                (format!("U+{:04X}..U+{:04X}", block.code_range.start(), block.code_range.end()))
+            <a
+                href=(format!(
+                    "/blocks/{:04X}..{:04X}", block.code_range.start(), block.code_range
+                    .end()
+                ))
+            >
+                (format!(
+                    "U+{:04X}..U+{:04X}", block.code_range.start(), block.code_range
+                    .end()
+                ))
                 " "
                 (format!("{}", block.block_name))
             </a>
