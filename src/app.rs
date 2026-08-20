@@ -2,11 +2,11 @@ use std::sync::atomic::AtomicU16;
 
 mod api;
 mod blocks;
+mod chars;
 mod context;
 mod example;
 mod examples;
 mod hello;
-mod u;
 
 struct AppContext {
     pub blocks: Vec<super::Block>,

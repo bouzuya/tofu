@@ -21,7 +21,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .find(|block| block.code_range.contains(&(char_ as u32)))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
-        <h1>"Code Point"</h1>
+        <h1>"Char"</h1>
         <p
             style="align-items: center; border: 2px solid #000; display: flex; flex-flow: column nowrap; font-size: 48px; height: 80px; justify-content: center; width: 80px;"
         >
@@ -79,7 +79,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     .map(|entry| &entry.cross_refs)
                     .unwrap_or(&Vec::new()) {
                     <li>
-                        <a href=(format!("/u/{:04X}", code_point))>
+                        <a href=(format!("/chars/{:04X}", code_point))>
                             (format!("U+{:04X}", code_point))
                             " "
                             (name.to_ascii_uppercase())

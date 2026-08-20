@@ -39,7 +39,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     }
                     Some(entry) => {
                         <li>
-                            <a href=(format!("/u/{:04X}", code_point))>
+                            <a href=(format!("/chars/{:04X}", code_point))>
                                 (format!("U+{:04X}", code_point))
                                 " "
                                 (entry.name.to_ascii_uppercase())
