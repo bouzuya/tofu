@@ -28,12 +28,9 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             (format!("{}", char_))
         </p>
         <p>
-            "code_point: "
             "U+"
             (code_point_value)
-        </p>
-        <p>
-            "name: "
+            " "
             (format!(
                 "{}", app_context.names_list.get(& (char_ as u32)).map(| entry | & entry
                 .name).unwrap_or(& "<unknown>".to_string())
@@ -53,7 +50,13 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         </div>
         <p>
             "block: "
-            (format!("{}", block.block_name))
+            <a href=(format!(
+                "/blocks/{:04X}..{:04X}", block.code_range.start(), block.code_range.end()
+            ))>
+                (format!("U+{:04X}..U+{:04X}", block.code_range.start(), block.code_range.end()))
+                " "
+                (format!("{}", block.block_name))
+            </a>
         </p>
         <div>
             "comments:"

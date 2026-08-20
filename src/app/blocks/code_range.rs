@@ -27,5 +27,27 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             " "
             (format!("{}", block.block_name))
         </p>
+        <ul>
+            for code_point in block.code_range.clone() {
+                match app_context.names_list.get(&code_point) {
+                    None => {
+                        <li>
+                            (format!("U+{:04X}", code_point))
+                            " "
+                            "<unknown>"
+                        </li>
+                    }
+                    Some(entry) => {
+                        <li>
+                            <a href=(format!("/u/{:04X}", code_point))>
+                                (format!("U+{:04X}", code_point))
+                                " "
+                                (entry.name.to_ascii_uppercase())
+                            </a>
+                        </li>
+                    }
+                }
+            }
+        </ul>
     }
 }
