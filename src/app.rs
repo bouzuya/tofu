@@ -1,6 +1,7 @@
 use std::sync::atomic::AtomicU16;
 
 mod api;
+mod blocks;
 mod context;
 mod example;
 mod examples;
