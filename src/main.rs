@@ -1,4 +1,5 @@
 mod app;
+mod code_point;
 
 #[::tokio::main]
 async fn main() {

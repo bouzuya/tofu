@@ -1,18 +1,13 @@
 use crate::app::AppContext;
 
 #[::topcoat::router::path_param(error = bad_request)]
-struct CodePoint(String);
+struct CodePoint(pub crate::code_point::CodePoint);
 
 #[::topcoat::router::page]
 async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
-    let code_point_value = ::topcoat::router::path_param::<CodePoint>(cx)?;
-    let char_ = code_point_value
-        .chars()
-        .all(|c| matches!(c, '0'..='9' | 'a'..='f' | 'A'..='F'))
-        .then(|| code_point_value)
-        .and_then(|it| u32::from_str_radix(&it, 16).ok())
-        .and_then(|it| matches!(it, 0x0..=0x10FFFF).then(|| it))
-        .and_then(std::char::from_u32)
+    let code_point = ::topcoat::router::path_param::<CodePoint>(cx)?;
+    let char_ = code_point
+        .to_char()
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     let app_context = ::topcoat::context::app_context::<AppContext>(cx);
     let block = app_context
@@ -26,15 +21,18 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 <li><a href="/">"Home"</a></li>
                 <li><a href="/chars">"Chars"</a></li>
                 <li>
-                    <a href=(format!("/chars/{:04X}", char_ as u32))>
-                        (format!("U+{:04X}", char_ as u32))
+                    <a
+                        href=(format!(
+                            "/chars/{}", code_point.to_string_without_u_plus()
+                        ))
+                    >
+                        (code_point.to_string_with_u_plus())
                     </a>
                 </li>
             </ol>
         </nav>
         <h1>
-            "U+"
-            (code_point_value)
+            (code_point.to_string_with_u_plus())
             " "
             (format!(
                 "{}", app_context.names_list.get(& (char_ as u32)).map(| entry | & entry
