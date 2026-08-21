@@ -35,7 +35,10 @@ pub fn router(
 
 #[::topcoat::router::page]
 async fn root() -> ::topcoat::Result {
-    ::topcoat::view::view! { <h1>"📛 tofu"</h1> }
+    ::topcoat::view::view! {
+        <nav class="breadcrumb-list"><ol><li><a href="/">"Home"</a></li></ol></nav>
+        <h1>"📛 tofu"</h1>
+    }
 }
 
 #[::topcoat::router::layout]

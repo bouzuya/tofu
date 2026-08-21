@@ -14,6 +14,12 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .clamp(0x0000, 0x10FFFF);
     let limit = 20_u32;
     ::topcoat::view::view! {
+        <nav class="breadcrumb-list">
+            <ol>
+                <li><a href="/">"Home"</a></li>
+                <li><a href="/chars">"Chars"</a></li>
+            </ol>
+        </nav>
         <h1>"Chars"</h1>
         <ul>
             for (code_point, char_entry) in (start..=0x10FFFF)

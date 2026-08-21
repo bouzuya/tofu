@@ -21,6 +21,17 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .find(|block| block.code_range.contains(&(char_ as u32)))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
+        <nav class="breadcrumb-list">
+            <ol>
+                <li><a href="/">"Home"</a></li>
+                <li><a href="/chars">"Chars"</a></li>
+                <li>
+                    <a href=(format!("/chars/{:04X}", char_ as u32))>
+                        (format!("U+{:04X}", char_ as u32))
+                    </a>
+                </li>
+            </ol>
+        </nav>
         <h1>
             "U+"
             (code_point_value)

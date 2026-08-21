@@ -21,6 +21,23 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .find(|block| block.code_range == (start_code..=end_code))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
+        <nav class="breadcrumb-list">
+            <ol>
+                <li><a href="/">"Home"</a></li>
+                <li><a href="/blocks">"Blocks"</a></li>
+                <li>
+                    <a
+                        href=(format!(
+                            "/blocks/{:04X}..{:04X}", start_code, end_code
+                        ))
+                    >
+                        (format!(
+                            "U+{:04X}..U+{:04X}", start_code, end_code
+                        ))
+                    </a>
+                </li>
+            </ol>
+        </nav>
         <h1>
             (format!("U+{:04X}..U+{:04X}", start_code, end_code))
             " "

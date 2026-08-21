@@ -4,6 +4,12 @@ mod code_range;
 async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let app_context = ::topcoat::context::app_context::<crate::app::AppContext>(cx);
     ::topcoat::view::view! {
+        <nav class="breadcrumb-list">
+            <ol>
+                <li><a href="/">"Home"</a></li>
+                <li><a href="/blocks">"Blocks"</a></li>
+            </ol>
+        </nav>
         <h1>"Blocks"</h1>
         <ul>
             for block in &app_context.blocks {
