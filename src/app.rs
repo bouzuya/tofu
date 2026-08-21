@@ -35,7 +35,7 @@ pub fn router(
 
 #[::topcoat::router::page]
 async fn root() -> ::topcoat::Result {
-    ::topcoat::view::view! { <p>"OK"</p> }
+    ::topcoat::view::view! { <h1>"📛 tofu"</h1> }
 }
 
 #[::topcoat::router::layout]
@@ -58,7 +58,7 @@ async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
         <html>
             <head>
                 <meta charset="utf-8" />
-                <title>"tofu"</title>
+                <title>"📛 tofu"</title>
                 ::topcoat::dev::script()
             </head>
             <body>(content)</body>
