@@ -1,6 +1,8 @@
 mod app;
 mod code_point;
 
+pub use crate::code_point::CodePoint;
+
 #[::tokio::main]
 async fn main() {
     let blocks = fetch_blocks().await.unwrap();
@@ -12,7 +14,7 @@ async fn main() {
 
 #[derive(Debug)]
 struct Block {
-    code_range: std::ops::RangeInclusive<u32>,
+    code_range: std::ops::RangeInclusive<CodePoint>,
     block_name: String,
 }
 
@@ -31,14 +33,14 @@ async fn fetch_blocks() -> Result<Vec<Block>, Box<dyn std::error::Error + Send +
         if parsed.len() != 2 {
             return Err(format!("Invalid line format: {}", line).into());
         }
-        let start_code = u32::from_str_radix(parsed[0], 16)
-            .map_err(|_| format!("invalid start_code: {}", parsed[0]))?;
+        let start_code = CodePoint::from_str_without_u_plus(parsed[0])
+            .ok_or_else(|| format!("invalid start_code: {}", parsed[0]))?;
         let parsed = parsed[1].split_terminator("; ").collect::<Vec<&str>>();
         if parsed.len() != 2 {
             return Err(format!("Invalid line format: {}", line).into());
         }
-        let end_code = u32::from_str_radix(parsed[0], 16)
-            .map_err(|_| format!("invalid end_code: {}", parsed[0]))?;
+        let end_code = CodePoint::from_str_without_u_plus(parsed[0])
+            .ok_or_else(|| format!("invalid end_code: {}", parsed[0]))?;
         let block_name = parsed[1];
         blocks.push(Block {
             code_range: start_code..=end_code,
@@ -170,7 +172,7 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
 
 #[cfg(test)]
 mod tests {
-    use crate::parse_names_list;
+    use crate::{CodePoint, parse_names_list};
 
     #[::tokio::test]
     async fn test_fetch_blocks() -> ::anyhow::Result<()> {
@@ -179,7 +181,7 @@ mod tests {
             .map_err(|e| ::anyhow::anyhow!(e))?;
         let block = blocks
             .iter()
-            .find(|it| it.code_range.contains(&u32::from('あ')));
+            .find(|it| it.code_range.contains(&CodePoint::from_char('あ')));
         println!("{:#?}", blocks);
         println!("{:#?}", block);
         Ok(())

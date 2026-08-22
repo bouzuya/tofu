@@ -4,10 +4,14 @@ pub enum CodePointError {
     InvalidCodePoint(String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 pub struct CodePoint(u32);
 
 impl CodePoint {
+    pub fn from_char(c: char) -> Self {
+        Self::from_u32(u32::from(c)).expect("char is always in the range 0x0..=0x10FFFF")
+    }
+
     pub fn from_str_with_u_plus(s: &str) -> Option<Self> {
         s.strip_prefix("U+").and_then(Self::from_str_without_u_plus)
     }
@@ -61,6 +65,12 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_from_char() {
+        assert_eq!(CodePoint::from_char('A'), CodePoint(0x0041));
+        assert_eq!(CodePoint::from_char('あ'), CodePoint(0x3042));
+    }
+
+    #[test]
     fn test_from_str_with_u_plus() {
         assert_eq!(
             CodePoint::from_str_with_u_plus("U+0041"),
@@ -96,6 +106,13 @@ mod tests {
     }
 
     #[test]
+    fn test_impl_clone_and_copy_trait() -> anyhow::Result<()> {
+        fn assert_impls<T: Clone + Copy>() {}
+        assert_impls::<CodePoint>();
+        Ok(())
+    }
+
+    #[test]
     fn test_impl_display_trait() -> anyhow::Result<()> {
         assert_eq!(
             CodePoint::from_str_without_u_plus("0041")
@@ -109,6 +126,13 @@ mod tests {
                 .to_string(),
             "10FFFF"
         );
+        Ok(())
+    }
+
+    #[test]
+    fn test_impl_partial_ord_trait() -> anyhow::Result<()> {
+        fn assert_impls<T: PartialOrd>() {}
+        assert_impls::<CodePoint>();
         Ok(())
     }
 

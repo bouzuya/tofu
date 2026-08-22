@@ -16,14 +16,14 @@ async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 <li>
                     <a
                         href=(format!(
-                            "/blocks/{:04X}..{:04X}", block.code_range.start(), block
-                            .code_range.end()
+                            "/blocks/{}..{}", block.code_range.start()
+                            .to_string_without_u_plus(), block.code_range.end()
+                            .to_string_without_u_plus()
                         ))
                     >
-                        (format!(
-                            "U+{:04X}..U+{:04X}", block.code_range.start(), block
-                            .code_range.end()
-                        ))
+                        (block.code_range.start().to_string_with_u_plus())
+                        ".."
+                        (block.code_range.end().to_string_with_u_plus())
                         " "
                         (format!("{}", block.block_name))
                     </a>

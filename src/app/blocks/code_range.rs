@@ -1,3 +1,5 @@
+use crate::CodePoint;
+
 #[::topcoat::router::path_param(error = not_found)]
 struct CodeRange(String);
 
@@ -10,10 +12,10 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     if parsed.len() != 2 {
         return Err(::topcoat::router::error::not_found().into());
     }
-    let start_code =
-        u32::from_str_radix(parsed[0], 16).map_err(|_| ::topcoat::router::error::not_found())?;
-    let end_code =
-        u32::from_str_radix(parsed[1], 16).map_err(|_| ::topcoat::router::error::not_found())?;
+    let start_code = CodePoint::from_str_without_u_plus(parsed[0])
+        .ok_or_else(|| ::topcoat::router::error::not_found())?;
+    let end_code = CodePoint::from_str_without_u_plus(parsed[1])
+        .ok_or_else(|| ::topcoat::router::error::not_found())?;
     let app_context = ::topcoat::context::app_context::<crate::app::AppContext>(cx);
     let block = app_context
         .blocks
@@ -28,35 +30,49 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 <li>
                     <a
                         href=(format!(
-                            "/blocks/{:04X}..{:04X}", start_code, end_code
+                            "/blocks/{}..{}", start_code.to_string_without_u_plus(),
+                            end_code.to_string_without_u_plus()
                         ))
                     >
-                        (format!(
-                            "U+{:04X}..U+{:04X}", start_code, end_code
-                        ))
+                        (start_code.to_string_with_u_plus())
+                        ".."
+                        (end_code.to_string_with_u_plus())
                     </a>
                 </li>
             </ol>
         </nav>
         <h1>
-            (format!("U+{:04X}..U+{:04X}", start_code, end_code))
+            (start_code.to_string_with_u_plus())
+            ".."
+            (end_code.to_string_with_u_plus())
             " "
             (format!("{}", block.block_name))
         </h1>
         <ul>
-            for code_point in block.code_range.clone() {
-                match app_context.names_list.get(&code_point) {
+            for code_point_as_u32 in block
+                .code_range
+                .start()
+                .to_u32()..=block.code_range.end().to_u32() {
+                let code_point = match CodePoint::from_u32(code_point_as_u32) {
+                    None => continue,
+                    Some(code_point) => code_point,
+                };
+                match app_context.names_list.get(&code_point.to_u32()) {
                     None => {
                         <li>
-                            (format!("U+{:04X}", code_point))
+                            (code_point.to_string_with_u_plus())
                             " "
                             "<unknown>"
                         </li>
                     }
                     Some(entry) => {
                         <li>
-                            <a href=(format!("/chars/{:04X}", code_point))>
-                                (format!("U+{:04X}", code_point))
+                            <a
+                                href=(format!(
+                                    "/chars/{}", code_point.to_string_without_u_plus()
+                                ))
+                            >
+                                (code_point.to_string_with_u_plus())
                                 " "
                                 (entry.name.to_ascii_uppercase())
                             </a>

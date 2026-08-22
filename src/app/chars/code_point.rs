@@ -13,7 +13,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let block = app_context
         .blocks
         .iter()
-        .find(|block| block.code_range.contains(&(char_ as u32)))
+        .find(|block| block.code_range.contains(&code_point))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
     ::topcoat::view::view! {
         <nav class="breadcrumb-list">
@@ -60,14 +60,14 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             "block: "
             <a
                 href=(format!(
-                    "/blocks/{:04X}..{:04X}", block.code_range.start(), block.code_range
-                    .end()
+                    "/blocks/{}..{}", block.code_range.start()
+                    .to_string_without_u_plus(), block.code_range.end()
+                    .to_string_without_u_plus()
                 ))
             >
-                (format!(
-                    "U+{:04X}..U+{:04X}", block.code_range.start(), block.code_range
-                    .end()
-                ))
+                (block.code_range.start().to_string_with_u_plus())
+                ".."
+                (block.code_range.end().to_string_with_u_plus())
                 " "
                 (format!("{}", block.block_name))
             </a>
