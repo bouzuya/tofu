@@ -1,4 +1,8 @@
+mod api;
+mod context;
 mod cookie;
+mod example;
+mod hello;
 mod login;
 mod logout;
 
