@@ -1,5 +1,7 @@
 use std::sync::atomic::AtomicU16;
 
+use crate::CodePoint;
+
 mod blocks;
 mod chars;
 mod examples;
@@ -29,11 +31,48 @@ pub fn router(
         .build()
 }
 
+#[::topcoat::router::query_params(error = bad_request)]
+struct RootQueryParams {
+    q: Option<String>,
+}
+
 #[::topcoat::router::page]
-async fn root() -> ::topcoat::Result {
+async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+    let query = ::topcoat::router::query_params::<RootQueryParams>(cx)?;
+    match &query.q {
+        Some(s) if s.chars().count() == 1 => match s.chars().next() {
+            None => {}
+            Some(c) => {
+                let code = c as u32;
+                let names_list = &::topcoat::context::app_context::<AppContext>(cx).names_list;
+                match names_list.get(&code) {
+                    Some(_entry) => {
+                        return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
+                            ::topcoat::router::error::redirect(&format!(
+                                "/chars/{}",
+                                CodePoint::from_char(c).to_string_without_u_plus()
+                            ))
+                            .into(),
+                        );
+                    }
+                    None => {
+                        return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
+                            ::topcoat::router::error::not_found().into(),
+                        );
+                    }
+                }
+            }
+        },
+        Some(_) | None => {}
+    }
+
     ::topcoat::view::view! {
         <nav class="breadcrumb-list"><ol><li><a href="/">"Home"</a></li></ol></nav>
         <h1>"📛 tofu"</h1>
+        <form method="get" action="/">
+            <input name="q" type="text" />
+            <button type="submit">"Search"</button>
+        </form>
     }
 }
 
