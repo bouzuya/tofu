@@ -73,6 +73,10 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             <input name="q" type="text" />
             <button type="submit">"Search"</button>
         </form>
+        <ul>
+            <li><a href="/blocks">"Blocks"</a></li>
+            <li><a href="/chars">"Characters"</a></li>
+        </ul>
     }
 }
 
