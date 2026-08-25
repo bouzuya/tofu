@@ -1,4 +1,4 @@
-use crate::CodePoint;
+use crate::{CodePoint, components::character};
 
 #[::topcoat::router::path_param(error = not_found)]
 struct CodeRange(String);
@@ -37,6 +37,8 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                         (start_code.to_string_with_u_plus())
                         ".."
                         (end_code.to_string_with_u_plus())
+                        " "
+                        (block.block_name.clone())
                     </a>
                 </li>
             </ol>
@@ -46,7 +48,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             ".."
             (end_code.to_string_with_u_plus())
             " "
-            (format!("{}", block.block_name))
+            (block.block_name.clone())
         </h1>
         <ul>
             for code_point_as_u32 in block
@@ -72,6 +74,11 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                                     "/chars/{}", code_point.to_string_without_u_plus()
                                 ))
                             >
+                                character(
+                                    c: code_point.to_char().unwrap_or(' '),
+                                    thumbnail: true
+                                )
+                                " "
                                 (code_point.to_string_with_u_plus())
                                 " "
                                 (entry.name.to_ascii_uppercase())

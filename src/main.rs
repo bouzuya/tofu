@@ -1,5 +1,6 @@
 mod app;
 mod code_point;
+mod components;
 
 pub use crate::code_point::CodePoint;
 

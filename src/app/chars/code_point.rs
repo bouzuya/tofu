@@ -1,4 +1,5 @@
 use crate::app::AppContext;
+use crate::components::character;
 
 #[::topcoat::router::path_param(error = bad_request)]
 struct CodePoint(pub crate::code_point::CodePoint);
@@ -39,11 +40,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 .name).unwrap_or(& "<unknown>".to_string())
             ))
         </h1>
-        <p
-            style="align-items: center; border: 2px solid #000; display: flex; flex-flow: column nowrap; font-size: 48px; height: 80px; justify-content: center; width: 80px;"
-        >
-            (format!("{}", char_))
-        </p>
+        character(c: char_, thumbnail: false)
         <div>
             "aliases:"
             <ul>
