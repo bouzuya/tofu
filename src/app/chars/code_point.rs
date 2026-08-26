@@ -28,6 +28,11 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                         ))
                     >
                         (code_point.to_string_with_u_plus())
+                        " "
+                        (format!(
+                            "{}", app_context.names_list.get(& code_point).map(| entry |
+                            & entry.name).unwrap_or(& "<unknown>".to_string())
+                        ))
                     </a>
                 </li>
             </ol>
