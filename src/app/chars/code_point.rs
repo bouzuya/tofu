@@ -36,7 +36,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             (code_point.to_string_with_u_plus())
             " "
             (format!(
-                "{}", app_context.names_list.get(& (char_ as u32)).map(| entry | & entry
+                "{}", app_context.names_list.get(& code_point).map(| entry | & entry
                 .name).unwrap_or(& "<unknown>".to_string())
             ))
         </h1>
@@ -46,7 +46,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             <ul>
                 for alias in app_context
                     .names_list
-                    .get(&(char_ as u32))
+                    .get(&code_point)
                     .map(|entry| &entry.aliases)
                     .unwrap_or(&Vec::new()) {
                     <li>(alias)</li>
@@ -74,7 +74,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             <ul>
                 for comment in app_context
                     .names_list
-                    .get(&(char_ as u32))
+                    .get(&code_point)
                     .map(|entry| &entry.comments)
                     .unwrap_or(&Vec::new()) {
                     <li>(comment)</li>
@@ -86,12 +86,16 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             <ul>
                 for (name, code_point) in app_context
                     .names_list
-                    .get(&(char_ as u32))
+                    .get(&code_point)
                     .map(|entry| &entry.cross_refs)
                     .unwrap_or(&Vec::new()) {
                     <li>
-                        <a href=(format!("/chars/{:04X}", code_point))>
-                            (format!("U+{:04X}", code_point))
+                        <a
+                            href=(format!(
+                                "/chars/{}", code_point.to_string_without_u_plus()
+                            ))
+                        >
+                            (code_point.to_string_with_u_plus())
                             " "
                             (name.to_ascii_uppercase())
                         </a>

@@ -23,18 +23,25 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <h1>"Chars"</h1>
         <ul>
             for (code_point, char_entry) in (start..=0x10FFFF)
-                .filter_map(|code_point| {
-                    app_context
-                        .names_list
-                        .get(&code_point)
-                        .map(|name| (code_point, name))
+                .filter_map(|code_point_as_u32| {
+                    crate::CodePoint::from_u32(code_point_as_u32)
+                        .and_then(|code_point| {
+                            app_context
+                                .names_list
+                                .get(&code_point)
+                                .map(|name| (code_point, name))
+                        })
                 })
                 .take(usize::try_from(limit).expect("limit is too large")) {
                 <li>
-                    <a href=(format!("/chars/{:04X}", code_point))>
-                        (format!(
-                            "U+{:04X} {}", code_point, char_entry.name
+                    <a
+                        href=(format!(
+                            "/chars/{}", code_point.to_string_without_u_plus()
                         ))
+                    >
+                        (code_point.to_string_with_u_plus())
+                        " "
+                        (char_entry.name.clone())
                     </a>
                 </li>
             }

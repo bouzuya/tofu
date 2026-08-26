@@ -9,12 +9,12 @@ mod examples;
 struct AppContext {
     pub blocks: Vec<super::Block>,
     pub count: AtomicU16,
-    pub names_list: std::collections::HashMap<u32, super::CharEntry>,
+    pub names_list: std::collections::HashMap<CodePoint, super::CharEntry>,
 }
 
 pub fn router(
     blocks: Vec<super::Block>,
-    names_list: std::collections::HashMap<u32, super::CharEntry>,
+    names_list: std::collections::HashMap<CodePoint, super::CharEntry>,
 ) -> ::topcoat::router::Router {
     use topcoat::cookie::RouterBuilderCookieExt as _;
     use topcoat::session::RouterBuilderSessionExt as _;
@@ -39,18 +39,18 @@ struct RootQueryParams {
 #[::topcoat::router::page]
 async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let query = ::topcoat::router::query_params::<RootQueryParams>(cx)?;
+    let names_list = &::topcoat::context::app_context::<AppContext>(cx).names_list;
     match &query.q {
         Some(s) if s.chars().count() == 1 => match s.chars().next() {
             None => {}
             Some(c) => {
-                let code = c as u32;
-                let names_list = &::topcoat::context::app_context::<AppContext>(cx).names_list;
-                match names_list.get(&code) {
+                let code_point = CodePoint::from_char(c);
+                match names_list.get(&code_point) {
                     Some(_entry) => {
                         return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
                             ::topcoat::router::error::redirect(&format!(
                                 "/chars/{}",
-                                CodePoint::from_char(c).to_string_without_u_plus()
+                                code_point.to_string_without_u_plus()
                             ))
                             .into(),
                         );

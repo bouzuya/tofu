@@ -59,7 +59,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     None => continue,
                     Some(code_point) => code_point,
                 };
-                match app_context.names_list.get(&code_point.to_u32()) {
+                match app_context.names_list.get(&code_point) {
                     None => {
                         <li>
                             (code_point.to_string_with_u_plus())

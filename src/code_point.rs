@@ -4,7 +4,7 @@ pub enum CodePointError {
     InvalidCodePoint(String),
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct CodePoint(u32);
 
 impl CodePoint {

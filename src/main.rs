@@ -54,22 +54,23 @@ async fn fetch_blocks() -> Result<Vec<Block>, Box<dyn std::error::Error + Send +
 #[derive(Clone, Debug, PartialEq)]
 struct CharEntry {
     aliases: Vec<String>,
-    code_point: u32,
+    code_point: CodePoint,
     comments: Vec<String>,
-    cross_refs: Vec<(String, u32)>,
+    cross_refs: Vec<(String, CodePoint)>,
     name: String,
 }
 
 async fn fetch_names_list()
--> Result<std::collections::HashMap<u32, CharEntry>, Box<dyn std::error::Error + Send + Sync>> {
+-> Result<std::collections::HashMap<CodePoint, CharEntry>, Box<dyn std::error::Error + Send + Sync>>
+{
     let response =
         ::reqwest::get("https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt").await?;
     let text = response.text().await?;
     Ok(parse_names_list(&text))
 }
 
-fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
-    let mut names = std::collections::HashMap::<u32, CharEntry>::new();
+fn parse_names_list(text: &str) -> std::collections::HashMap<CodePoint, CharEntry> {
+    let mut names = std::collections::HashMap::<CodePoint, CharEntry>::new();
     let mut iter = text.lines().peekable();
     while let Some(line) = iter.next() {
         if line.starts_with(';') {
@@ -87,7 +88,7 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
         }
 
         let parts = line.split('\t').collect::<Vec<&str>>();
-        let char = parts[0];
+        let code_point = CodePoint::from_str_without_u_plus(parts[0]).unwrap();
         let name = parts[1];
         if name.starts_with('<') {
             while let Some(next_line) = iter.peek() {
@@ -139,7 +140,7 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
                     }
                     Some(cross_ref) => {
                         if let Some((name, code)) = cross_ref.rsplit_once(" - ") {
-                            if let Ok(code_point) = u32::from_str_radix(code, 16) {
+                            if let Some(code_point) = CodePoint::from_str_without_u_plus(code) {
                                 cross_refs.push((name.to_string(), code_point));
                             }
                         }
@@ -155,7 +156,6 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
             break;
         }
 
-        let code_point = u32::from_str_radix(char, 16).unwrap();
         names.insert(
             code_point,
             CharEntry {
@@ -173,6 +173,8 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<u32, CharEntry> {
 
 #[cfg(test)]
 mod tests {
+    use anyhow::Context;
+
     use crate::{CodePoint, parse_names_list};
 
     #[::tokio::test]
@@ -193,16 +195,16 @@ mod tests {
         let names = super::fetch_names_list()
             .await
             .map_err(|e| ::anyhow::anyhow!(e))?;
-        let name = names.get(&u32::from('あ')).unwrap();
+        let name = names.get(&CodePoint::from_char('あ')).unwrap();
         println!("{:#?}", names);
         println!("{:#?}", name);
-        let name = names.get(&u32::from('&')).unwrap();
+        let name = names.get(&CodePoint::from_char('&')).unwrap();
         println!("{:#?}", name);
         Ok(())
     }
 
     #[test]
-    fn test_parse_names_list() {
+    fn test_parse_names_list() -> anyhow::Result<()> {
         let text = "0026\tAMPERSAND
 \t= and
 \t* originally derived from a ligature of 'e' and 't'
@@ -213,22 +215,36 @@ mod tests {
         assert_eq!(
             parse_names_list(text),
             [(
-                0x0026,
+                CodePoint::from_str_without_u_plus("0026").context("code_point 0026")?,
                 super::CharEntry {
                     aliases: vec!["and".to_string(),],
-                    code_point: 0x0026,
+                    code_point: CodePoint::from_str_without_u_plus("0026")
+                        .context("code_point 0026")?,
                     comments: vec!["originally derived from a ligature of 'e' and 't'".to_string()],
                     cross_refs: vec![
-                        ("tironian sign et".to_string(), 0x204A),
-                        ("turned ampersand".to_string(), 0x214B),
-                        ("heavy ampersand ornament".to_string(), 0x1F674),
+                        (
+                            "tironian sign et".to_string(),
+                            CodePoint::from_str_without_u_plus("204A")
+                                .context("code_point 204A")?
+                        ),
+                        (
+                            "turned ampersand".to_string(),
+                            CodePoint::from_str_without_u_plus("214B")
+                                .context("code_point 214B")?
+                        ),
+                        (
+                            "heavy ampersand ornament".to_string(),
+                            CodePoint::from_str_without_u_plus("1F674")
+                                .context("code_point 1F674")?
+                        ),
                     ],
                     name: "AMPERSAND".to_string(),
                 }
             )]
             .iter()
             .cloned()
-            .collect::<std::collections::HashMap<u32, super::CharEntry>>()
+            .collect::<std::collections::HashMap<CodePoint, super::CharEntry>>()
         );
+        Ok(())
     }
 }
