@@ -95,6 +95,11 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                                 "/chars/{}", code_point.to_string_without_u_plus()
                             ))
                         >
+                            character(
+                                c: code_point.to_char().unwrap_or(' '),
+                                thumbnail: true
+                            )
+                            " "
                             (code_point.to_string_with_u_plus())
                             " "
                             (name.to_ascii_uppercase())
