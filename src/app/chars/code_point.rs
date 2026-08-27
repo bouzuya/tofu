@@ -20,7 +20,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <nav class="breadcrumb-list">
             <ol>
                 <li><a href="/">"Home"</a></li>
-                <li><a href="/chars">"Chars"</a></li>
+                <li><a href="/chars">"Characters"</a></li>
                 <li>
                     <a
                         href=(format!(

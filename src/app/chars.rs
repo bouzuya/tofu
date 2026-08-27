@@ -19,10 +19,10 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <nav class="breadcrumb-list">
             <ol>
                 <li><a href="/">"Home"</a></li>
-                <li><a href="/chars">"Chars"</a></li>
+                <li><a href="/chars">"Characters"</a></li>
             </ol>
         </nav>
-        <h1>"Chars"</h1>
+        <h1>"Characters"</h1>
         <ul>
             for (code_point, char_entry) in (start..=0x10FFFF)
                 .filter_map(|code_point_as_u32| {
