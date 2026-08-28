@@ -65,6 +65,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         },
         Some(_) | None => {}
     }
+    let version = env!("CARGO_PKG_VERSION");
 
     ::topcoat::view::view! {
         breadcrumbs(items: vec![("/", "Home")])
@@ -89,6 +90,23 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 </a>
             </li>
         </ul>
+        <div class="about">
+            <div>"📛"</div>
+            <div class="about-text">
+                <div class="brand">"tofu"</div>
+                <div class="version">
+                    "v"
+                    (version)
+                </div>
+                <a
+                    href="https://github.com/bouzuya/tofu"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                >
+                    "Source Code"
+                </a>
+            </div>
+        </div>
     }
 }
 
