@@ -1,5 +1,5 @@
 use crate::app::AppContext;
-use crate::components::character;
+use crate::components::{breadcrumbs, character};
 
 #[::topcoat::router::path_param(error = bad_request)]
 struct CodePoint(pub crate::code_point::CodePoint);
@@ -16,27 +16,23 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .iter()
         .find(|block| block.code_range.contains(&code_point))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
+    let char_url = format!("/chars/{}", code_point.to_string_without_u_plus());
+    let char_text = format!(
+        "{} {}",
+        code_point.to_string_with_u_plus(),
+        app_context
+            .names_list
+            .get(&code_point)
+            .map(|entry| &entry.name)
+            .unwrap_or(&"<unknown>".to_string())
+    );
     ::topcoat::view::view! {
-        <nav class="breadcrumb-list">
-            <ol>
-                <li><a href="/">"Home"</a></li>
-                <li><a href="/chars">"Characters"</a></li>
-                <li>
-                    <a
-                        href=(format!(
-                            "/chars/{}", code_point.to_string_without_u_plus()
-                        ))
-                    >
-                        (code_point.to_string_with_u_plus())
-                        " "
-                        (format!(
-                            "{}", app_context.names_list.get(& code_point).map(| entry |
-                            & entry.name).unwrap_or(& "<unknown>".to_string())
-                        ))
-                    </a>
-                </li>
-            </ol>
-        </nav>
+        breadcrumbs(
+            items: vec![
+                ("/", "Home"), ("/chars", "Characters"), (char_url.as_str(), char_text
+                .as_str()),
+            ]
+        )
         <h1>
             (code_point.to_string_with_u_plus())
             " "
@@ -52,14 +48,18 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 .names_list
                 .get(&code_point)
                 .map(|entry| &entry.aliases) {
-                Some(aliases) if !aliases.is_empty() => {
-                    <ul>
-                        for alias in aliases {
-                            <li>(alias)</li>
-                        }
-                    </ul>
+                Some(aliases) => {
+                    if !aliases.is_empty() {
+                        <ul>
+                            for alias in aliases {
+                                <li>(alias)</li>
+                            }
+                        </ul>
+                    } else {
+                        "(none)"
+                    }
                 }
-                Some(_) | None => {
+                None => {
                     "(none)"
                 }
             }
@@ -86,14 +86,18 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 .names_list
                 .get(&code_point)
                 .map(|entry| &entry.comments) {
-                Some(comments) if !comments.is_empty() => {
-                    <ul>
-                        for comment in comments {
-                            <li>(comment)</li>
-                        }
-                    </ul>
+                Some(comments) => {
+                    if !comments.is_empty() {
+                        <ul>
+                            for comment in comments {
+                                <li>(comment)</li>
+                            }
+                        </ul>
+                    } else {
+                        "(none)"
+                    }
                 }
-                Some(_) | None => {
+                None => {
                     "(none)"
                 }
             }
@@ -104,29 +108,33 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 .names_list
                 .get(&code_point)
                 .map(|entry| &entry.cross_refs) {
-                Some(cross_refs) if !cross_refs.is_empty() => {
-                    <ul>
-                        for (name, code_point) in cross_refs {
-                            <li>
-                                <a
-                                    href=(format!(
-                                        "/chars/{}", code_point.to_string_without_u_plus()
-                                    ))
-                                >
-                                    character(
-                                        c: code_point.to_char().unwrap_or(' '),
-                                        thumbnail: true
-                                    )
-                                    " "
-                                    (code_point.to_string_with_u_plus())
-                                    " "
-                                    (name.to_ascii_uppercase())
-                                </a>
-                            </li>
-                        }
-                    </ul>
+                Some(cross_refs) => {
+                    if !cross_refs.is_empty() {
+                        <ul>
+                            for (name, code_point) in cross_refs {
+                                <li>
+                                    <a
+                                        href=(format!(
+                                            "/chars/{}", code_point.to_string_without_u_plus()
+                                        ))
+                                    >
+                                        character(
+                                            c: code_point.to_char().unwrap_or(' '),
+                                            thumbnail: true
+                                        )
+                                        " "
+                                        (code_point.to_string_with_u_plus())
+                                        " "
+                                        (name.to_ascii_uppercase())
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    } else {
+                        "(none)"
+                    }
                 }
-                Some(_) | None => {
+                None => {
                     "(none)"
                 }
             }

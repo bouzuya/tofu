@@ -1,6 +1,6 @@
 mod code_point;
 
-use crate::components::character;
+use crate::components::{breadcrumbs, character};
 
 #[::topcoat::router::query_params(error = bad_request)]
 struct GetCharsParams {
@@ -16,12 +16,7 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .clamp(0x0000, 0x10FFFF);
     let limit = 20_u32;
     ::topcoat::view::view! {
-        <nav class="breadcrumb-list">
-            <ol>
-                <li><a href="/">"Home"</a></li>
-                <li><a href="/chars">"Characters"</a></li>
-            </ol>
-        </nav>
+        breadcrumbs(items: vec![("/", "Home"), ("/chars", "Characters")])
         <h1>"Characters"</h1>
         <ul>
             for (code_point, char_entry) in (start..=0x10FFFF)

@@ -1,6 +1,6 @@
 use std::sync::atomic::AtomicU16;
 
-use crate::CodePoint;
+use crate::{CodePoint, components::breadcrumbs};
 
 mod blocks;
 mod chars;
@@ -67,7 +67,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     }
 
     ::topcoat::view::view! {
-        <nav class="breadcrumb-list"><ol><li><a href="/">"Home"</a></li></ol></nav>
+        breadcrumbs(items: vec![("/", "Home")])
         <h1>"📛 tofu"</h1>
         <form method="get" action="/">
             <input name="q" type="text" />

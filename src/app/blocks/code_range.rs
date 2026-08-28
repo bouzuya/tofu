@@ -1,4 +1,7 @@
-use crate::{CodePoint, components::character};
+use crate::{
+    CodePoint,
+    components::{breadcrumbs, character},
+};
 
 #[::topcoat::router::path_param(error = not_found)]
 struct CodeRange(String);
@@ -22,27 +25,17 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .iter()
         .find(|block| block.code_range == (start_code..=end_code))
         .ok_or_else(|| ::topcoat::router::error::not_found())?;
+    let block_url = format!(
+        "/blocks/{}..{}",
+        start_code.to_string_without_u_plus(),
+        end_code.to_string_without_u_plus()
+    );
     ::topcoat::view::view! {
-        <nav class="breadcrumb-list">
-            <ol>
-                <li><a href="/">"Home"</a></li>
-                <li><a href="/blocks">"Blocks"</a></li>
-                <li>
-                    <a
-                        href=(format!(
-                            "/blocks/{}..{}", start_code.to_string_without_u_plus(),
-                            end_code.to_string_without_u_plus()
-                        ))
-                    >
-                        (start_code.to_string_with_u_plus())
-                        ".."
-                        (end_code.to_string_with_u_plus())
-                        " "
-                        (block.block_name.clone())
-                    </a>
-                </li>
-            </ol>
-        </nav>
+        breadcrumbs(
+            items: vec![
+                ("/", "Home"), ("/blocks", "Blocks"), (& block_url, & block.block_name),
+            ]
+        )
         <h1>
             (start_code.to_string_with_u_plus())
             ".."
