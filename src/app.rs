@@ -77,6 +77,18 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             <li><a href="/blocks">"Blocks"</a></li>
             <li><a href="/chars">"Characters"</a></li>
         </ul>
+        <ul>
+            <li>
+                <a href="https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt">
+                    "https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt"
+                </a>
+            </li>
+            <li>
+                <a href="https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt">
+                    "https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
+                </a>
+            </li>
+        </ul>
     }
 }
 

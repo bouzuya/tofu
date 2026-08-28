@@ -69,6 +69,7 @@ async fn fetch_names_list()
     Ok(parse_names_list(&text))
 }
 
+/// <https://www.unicode.org/Public/UCD/latest/ucd/NamesList.html>
 fn parse_names_list(text: &str) -> std::collections::HashMap<CodePoint, CharEntry> {
     let mut names = std::collections::HashMap::<CodePoint, CharEntry>::new();
     let mut iter = text.lines().peekable();
@@ -76,6 +77,7 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<CodePoint, CharEntr
         if line.starts_with(';') {
             continue;
         }
+
         if line.starts_with('@') {
             while let Some(next_line) = iter.peek() {
                 if next_line.starts_with('\t') {
