@@ -30,20 +30,20 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         start_code.to_string_without_u_plus(),
         end_code.to_string_without_u_plus()
     );
+    let block_text = format!(
+        "{}..{} {}",
+        start_code.to_string_with_u_plus(),
+        end_code.to_string_with_u_plus(),
+        block.block_name
+    );
     ::topcoat::view::view! {
         <div class="page">
             breadcrumbs(
                 items: vec![
-                ("/", "Home"), ("/blocks", "Blocks"), (& block_url, & block.block_name),
+                ("/", "tofu"), ("/blocks", "Blocks"), (& block_url, &block_text),
             ]
             )
-            <h1>
-                (start_code.to_string_with_u_plus())
-                ".."
-                (end_code.to_string_with_u_plus())
-                " "
-                (block.block_name.clone())
-            </h1>
+            <h1>(block_text)</h1>
             <ul>
                 for code_point_as_u32 in block
                     .code_range

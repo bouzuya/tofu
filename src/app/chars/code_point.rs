@@ -30,18 +30,10 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page">
             breadcrumbs(
                 items: vec![
-                ("/", "Home"), ("/chars", "Characters"), (char_url.as_str(), char_text
-                .as_str()),
+                ("/", "tofu"), ("/chars", "Characters"), (& char_url, &char_text),
             ]
             )
-            <h1>
-                (code_point.to_string_with_u_plus())
-                " "
-                (format!(
-                "{}", app_context.names_list.get(& code_point).map(| entry | & entry
-                .name).unwrap_or(& "<unknown>".to_string())
-            ))
-            </h1>
+            <h1>(char_text)</h1>
             character(c: char_, thumbnail: false)
             <div>
                 "aliases:"

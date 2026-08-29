@@ -20,6 +20,10 @@ body {
     min-width: 240px;
     overflow: auto;
     padding: 8px;
+
+    &>h1 {
+        display: none;
+    }
 }
 
 a {
@@ -43,10 +47,13 @@ a {
 
     &>ol>li>a {
         box-sizing: border-box;
+        color: #ccc;
         display: block;
+        font-weight: bold;
         height: 100%;
         overflow: hidden;
         padding: 8px;
+        text-decoration: none;
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 100%;

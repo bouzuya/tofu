@@ -71,7 +71,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
 
     ::topcoat::view::view! {
         <div class="page">
-            breadcrumbs(items: vec![("/", "Home")])
+            breadcrumbs(items: vec![("/", "tofu")])
             <h1>"📛 tofu"</h1>
             <form method="get" action="/">
                 <input name="q" type="text" />
