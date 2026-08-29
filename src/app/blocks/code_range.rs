@@ -37,7 +37,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         block.block_name
     );
     ::topcoat::view::view! {
-        <div class="page">
+        <div class="page block-detail-page">
             breadcrumbs(
                 items: vec![
                 ("/", "tofu"), ("/blocks", "Blocks"), (& block_url, &block_text),
@@ -56,9 +56,16 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     match app_context.names_list.get(&code_point) {
                         None => {
                             <li>
-                                (code_point.to_string_with_u_plus())
-                                " "
-                                "<unknown>"
+                                <span>
+                                    character(
+                                        c: ' ',
+                                        thumbnail: true
+                                    )
+                                    " "
+                                    (code_point.to_string_with_u_plus())
+                                    " "
+                                    "<unknown>"
+                                </span>
                             </li>
                         }
                         Some(entry) => {

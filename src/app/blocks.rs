@@ -6,7 +6,7 @@ mod code_range;
 async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let app_context = ::topcoat::context::app_context::<crate::app::AppContext>(cx);
     ::topcoat::view::view! {
-        <div class="page">
+        <div class="page block-list-page">
             breadcrumbs(items: vec![("/", "tofu"), ("/blocks", "Blocks")])
             <h1>"Blocks"</h1>
             <ul>
