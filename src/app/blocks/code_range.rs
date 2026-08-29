@@ -31,55 +31,57 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         end_code.to_string_without_u_plus()
     );
     ::topcoat::view::view! {
-        breadcrumbs(
-            items: vec![
+        <div class="page">
+            breadcrumbs(
+                items: vec![
                 ("/", "Home"), ("/blocks", "Blocks"), (& block_url, & block.block_name),
             ]
-        )
-        <h1>
-            (start_code.to_string_with_u_plus())
-            ".."
-            (end_code.to_string_with_u_plus())
-            " "
-            (block.block_name.clone())
-        </h1>
-        <ul>
-            for code_point_as_u32 in block
-                .code_range
-                .start()
-                .to_u32()..=block.code_range.end().to_u32() {
-                let code_point = match CodePoint::from_u32(code_point_as_u32) {
-                    None => continue,
-                    Some(code_point) => code_point,
-                };
-                match app_context.names_list.get(&code_point) {
-                    None => {
-                        <li>
-                            (code_point.to_string_with_u_plus())
-                            " "
-                            "<unknown>"
-                        </li>
-                    }
-                    Some(entry) => {
-                        <li>
-                            <a
-                                href=(format!(
-                                    "/chars/{}", code_point.to_string_without_u_plus()
-                                ))
-                            >
-                                character(
-                                    c: code_point.to_char().unwrap_or(' '),
-                                    thumbnail: true
-                                )
-                                " "
+            )
+            <h1>
+                (start_code.to_string_with_u_plus())
+                ".."
+                (end_code.to_string_with_u_plus())
+                " "
+                (block.block_name.clone())
+            </h1>
+            <ul>
+                for code_point_as_u32 in block
+                    .code_range
+                    .start()
+                    .to_u32()..=block.code_range.end().to_u32() {
+                    let code_point = match CodePoint::from_u32(code_point_as_u32) {
+                        None => continue,
+                        Some(code_point) => code_point,
+                    };
+                    match app_context.names_list.get(&code_point) {
+                        None => {
+                            <li>
                                 (code_point.to_string_with_u_plus())
                                 " "
-                                (entry.name.to_ascii_uppercase())
-                            </a>
-                        </li>
+                                "<unknown>"
+                            </li>
+                        }
+                        Some(entry) => {
+                            <li>
+                                <a
+                                    href=(format!(
+                                    "/chars/{}", code_point.to_string_without_u_plus()
+                                ))
+                                >
+                                    character(
+                                        c: code_point.to_char().unwrap_or(' '),
+                                        thumbnail: true
+                                    )
+                                    " "
+                                    (code_point.to_string_with_u_plus())
+                                    " "
+                                    (entry.name.to_ascii_uppercase())
+                                </a>
+                            </li>
+                        }
                     }
                 }
-            }
-        </ul>
+            </ul>
+        </div>
     }
 }

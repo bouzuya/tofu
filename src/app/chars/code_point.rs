@@ -27,117 +27,119 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             .unwrap_or(&"<unknown>".to_string())
     );
     ::topcoat::view::view! {
-        breadcrumbs(
-            items: vec![
+        <div class="page">
+            breadcrumbs(
+                items: vec![
                 ("/", "Home"), ("/chars", "Characters"), (char_url.as_str(), char_text
                 .as_str()),
             ]
-        )
-        <h1>
-            (code_point.to_string_with_u_plus())
-            " "
-            (format!(
+            )
+            <h1>
+                (code_point.to_string_with_u_plus())
+                " "
+                (format!(
                 "{}", app_context.names_list.get(& code_point).map(| entry | & entry
                 .name).unwrap_or(& "<unknown>".to_string())
             ))
-        </h1>
-        character(c: char_, thumbnail: false)
-        <div>
-            "aliases:"
-            match app_context
-                .names_list
-                .get(&code_point)
-                .map(|entry| &entry.aliases) {
-                Some(aliases) => {
-                    if !aliases.is_empty() {
-                        <ul>
-                            for alias in aliases {
-                                <li>(alias)</li>
-                            }
-                        </ul>
-                    } else {
+            </h1>
+            character(c: char_, thumbnail: false)
+            <div>
+                "aliases:"
+                match app_context
+                    .names_list
+                    .get(&code_point)
+                    .map(|entry| &entry.aliases) {
+                    Some(aliases) => {
+                        if !aliases.is_empty() {
+                            <ul>
+                                for alias in aliases {
+                                    <li>(alias)</li>
+                                }
+                            </ul>
+                        } else {
+                            "(none)"
+                        }
+                    }
+                    None => {
                         "(none)"
                     }
                 }
-                None => {
-                    "(none)"
-                }
-            }
-        </div>
-        <p>
-            "block: "
-            <a
-                href=(format!(
+            </div>
+            <p>
+                "block: "
+                <a
+                    href=(format!(
                     "/blocks/{}..{}", block.code_range.start()
                     .to_string_without_u_plus(), block.code_range.end()
                     .to_string_without_u_plus()
                 ))
-            >
-                (block.code_range.start().to_string_with_u_plus())
-                ".."
-                (block.code_range.end().to_string_with_u_plus())
-                " "
-                (format!("{}", block.block_name))
-            </a>
-        </p>
-        <div>
-            "comments:"
-            match app_context
-                .names_list
-                .get(&code_point)
-                .map(|entry| &entry.comments) {
-                Some(comments) => {
-                    if !comments.is_empty() {
-                        <ul>
-                            for comment in comments {
-                                <li>(comment)</li>
-                            }
-                        </ul>
-                    } else {
+                >
+                    (block.code_range.start().to_string_with_u_plus())
+                    ".."
+                    (block.code_range.end().to_string_with_u_plus())
+                    " "
+                    (format!("{}", block.block_name))
+                </a>
+            </p>
+            <div>
+                "comments:"
+                match app_context
+                    .names_list
+                    .get(&code_point)
+                    .map(|entry| &entry.comments) {
+                    Some(comments) => {
+                        if !comments.is_empty() {
+                            <ul>
+                                for comment in comments {
+                                    <li>(comment)</li>
+                                }
+                            </ul>
+                        } else {
+                            "(none)"
+                        }
+                    }
+                    None => {
                         "(none)"
                     }
                 }
-                None => {
-                    "(none)"
-                }
-            }
-        </div>
-        <div>
-            "cross_refs:"
-            match app_context
-                .names_list
-                .get(&code_point)
-                .map(|entry| &entry.cross_refs) {
-                Some(cross_refs) => {
-                    if !cross_refs.is_empty() {
-                        <ul>
-                            for (name, code_point) in cross_refs {
-                                <li>
-                                    <a
-                                        href=(format!(
+            </div>
+            <div>
+                "cross_refs:"
+                match app_context
+                    .names_list
+                    .get(&code_point)
+                    .map(|entry| &entry.cross_refs) {
+                    Some(cross_refs) => {
+                        if !cross_refs.is_empty() {
+                            <ul>
+                                for (name, code_point) in cross_refs {
+                                    <li>
+                                        <a
+                                            href=(format!(
                                             "/chars/{}", code_point.to_string_without_u_plus()
                                         ))
-                                    >
-                                        character(
-                                            c: code_point.to_char().unwrap_or(' '),
-                                            thumbnail: true
-                                        )
-                                        " "
-                                        (code_point.to_string_with_u_plus())
-                                        " "
-                                        (name.to_ascii_uppercase())
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    } else {
+                                        >
+                                            character(
+                                                c: code_point.to_char().unwrap_or(' '),
+                                                thumbnail: true
+                                            )
+                                            " "
+                                            (code_point.to_string_with_u_plus())
+                                            " "
+                                            (name.to_ascii_uppercase())
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        } else {
+                            "(none)"
+                        }
+                    }
+                    None => {
                         "(none)"
                     }
                 }
-                None => {
-                    "(none)"
-                }
-            }
+            </div>
         </div>
     }
 }

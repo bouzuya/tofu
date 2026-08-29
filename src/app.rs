@@ -16,6 +16,7 @@ pub fn router(
     blocks: Vec<super::Block>,
     names_list: std::collections::HashMap<CodePoint, super::CharEntry>,
 ) -> ::topcoat::router::Router {
+    use topcoat::asset::RouterBuilderAssetExt as _;
     use topcoat::cookie::RouterBuilderCookieExt as _;
     use topcoat::session::RouterBuilderSessionExt as _;
 
@@ -28,6 +29,7 @@ pub fn router(
         .cookies()
         .sessions(::topcoat::session::SessionConfig::default())
         .app_context(::topcoat::cookie::Key::generate())
+        .assets(::topcoat::asset::AssetBundle::load().unwrap())
         .build()
 }
 
@@ -68,43 +70,47 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let version = env!("CARGO_PKG_VERSION");
 
     ::topcoat::view::view! {
-        breadcrumbs(items: vec![("/", "Home")])
-        <h1>"📛 tofu"</h1>
-        <form method="get" action="/">
-            <input name="q" type="text" />
-            <button type="submit">"Search"</button>
-        </form>
-        <ul>
-            <li><a href="/blocks">"Blocks"</a></li>
-            <li><a href="/chars">"Characters"</a></li>
-        </ul>
-        <ul>
-            <li>
-                <a href="https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt">
-                    "https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt"
-                </a>
-            </li>
-            <li>
-                <a href="https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt">
-                    "https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
-                </a>
-            </li>
-        </ul>
-        <div class="about">
-            <div>"📛"</div>
-            <div class="about-text">
-                <div class="brand">"tofu"</div>
-                <div class="version">
-                    "v"
-                    (version)
+        <div class="page">
+            breadcrumbs(items: vec![("/", "Home")])
+            <h1>"📛 tofu"</h1>
+            <form method="get" action="/">
+                <input name="q" type="text" />
+                <button type="submit">"Search"</button>
+            </form>
+            <ul>
+                <li><a href="/blocks">"Blocks"</a></li>
+                <li><a href="/chars">"Characters"</a></li>
+            </ul>
+            <ul>
+                <li>
+                    <a
+                        href="https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt"
+                    >
+                        "https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt"
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt">
+                        "https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
+                    </a>
+                </li>
+            </ul>
+            <div class="about">
+                <div>"📛"</div>
+                <div class="about-text">
+                    <div class="brand">"tofu"</div>
+                    <div class="version">
+                        "v"
+                        (version)
+                    </div>
+                    <a
+                        href="https://github.com/bouzuya/tofu"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                    >
+                        "Source Code"
+                    </a>
                 </div>
-                <a
-                    href="https://github.com/bouzuya/tofu"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                >
-                    "Source Code"
-                </a>
             </div>
         </div>
     }
@@ -130,6 +136,7 @@ async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
         <html>
             <head>
                 <meta charset="utf-8" />
+                <link href=(::topcoat::asset::asset!("./index.css")) rel="stylesheet" />
                 <title>"📛 tofu"</title>
                 ::topcoat::dev::script()
             </head>
