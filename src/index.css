@@ -69,6 +69,54 @@ body {
 }
 
 .home-page {
+    &>form {
+        align-items: center;
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 8px;
+        justify-content: flex-start;
+        padding: 8px;
+    }
+
+    &>form>input[type="text"] {
+        background-color: #000;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        color: #ccc;
+        display: block;
+        flex: 4;
+        font-size: 1rem;
+        outline-offset: 0;
+        padding: 4px;
+        width: 100%;
+
+        &:focus-visible {
+            outline: 2px solid #ccc;
+        }
+    }
+
+    &>form>button[type="submit"] {
+        background-color: #000;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px #ccc;
+        box-sizing: border-box;
+        color: #ccc;
+        cursor: pointer;
+        display: block;
+        flex: 1;
+        font-size: 1rem;
+        outline-offset: 0;
+        padding: 4px 16px;
+        width: 100%;
+
+        &:focus-visible,
+        &:hover {
+            box-shadow: 3px 3px #ccc;
+            outline: 2px solid #ccc;
+            transform: translate(-1px, -1px);
+        }
+    }
+
     &>h2 {
         align-items: center;
         display: flex;
