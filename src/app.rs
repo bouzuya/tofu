@@ -70,7 +70,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let version = env!("CARGO_PKG_VERSION");
 
     ::topcoat::view::view! {
-        <div class="page">
+        <div class="page home-page">
             breadcrumbs(
                 items: vec![("/", Some(::topcoat::asset::asset!("./tofu.svg")), "tofu")]
             )
@@ -79,26 +79,42 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 <input name="q" type="text" />
                 <button type="submit">"Search"</button>
             </form>
+            <h2>"Menu"</h2>
             <ul>
                 <li><a href="/blocks">"Blocks"</a></li>
                 <li><a href="/chars">"Characters"</a></li>
             </ul>
+            <h2>"Data Sources"</h2>
             <ul>
                 <li>
                     <a
                         href="https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt"
+                        target="_blank"
+                        rel="noopener noreferrer"
                     >
                         "https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt"
                     </a>
                 </li>
                 <li>
-                    <a href="https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt">
+                    <a
+                        href="https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         "https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
                     </a>
                 </li>
             </ul>
+            <h2>"About"</h2>
             <div class="about">
-                <div>"📛"</div>
+                <div class="about-icon">
+                    <img
+                        alt=""
+                        height="64"
+                        src=(::topcoat::asset::asset!("./tofu.svg"))
+                        width="64"
+                    />
+                </div>
                 <div class="about-text">
                     <div class="brand">"tofu"</div>
                     <div class="version">
