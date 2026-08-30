@@ -71,8 +71,10 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
 
     ::topcoat::view::view! {
         <div class="page">
-            breadcrumbs(items: vec![("/", "tofu")])
-            <h1>"📛 tofu"</h1>
+            breadcrumbs(
+                items: vec![("/", Some(::topcoat::asset::asset!("./tofu.svg")), "tofu")]
+            )
+            <h1>"tofu"</h1>
             <form method="get" action="/">
                 <input name="q" type="text" />
                 <button type="submit">"Search"</button>
@@ -136,8 +138,13 @@ async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
         <html>
             <head>
                 <meta charset="utf-8" />
+                <link
+                    href=(::topcoat::asset::asset!("./favicon.svg"))
+                    rel="icon"
+                    type="image/svg+xml"
+                />
                 <link href=(::topcoat::asset::asset!("./index.css")) rel="stylesheet" />
-                <title>"📛 tofu"</title>
+                <title>"tofu"</title>
                 ::topcoat::dev::script()
             </head>
             <body>(content)</body>

@@ -40,7 +40,9 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page block-detail-page">
             breadcrumbs(
                 items: vec![
-                ("/", "tofu"), ("/blocks", "Blocks"), (& block_url, &block_text),
+                ("/", None, "tofu"),
+                ("/blocks", None, "Blocks"),
+                (& block_url, None, &block_text),
             ]
             )
             <h1>(block_text)</h1>
@@ -57,10 +59,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                         None => {
                             <li>
                                 <span>
-                                    character(
-                                        c: ' ',
-                                        thumbnail: true
-                                    )
+                                    character(c: ' ', thumbnail: true)
                                     " "
                                     (code_point.to_string_with_u_plus())
                                     " "
