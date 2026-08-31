@@ -49,6 +49,7 @@ body {
 
     &>ul>li>a {
         box-sizing: border-box;
+        color: #09f;
         display: block;
         height: 100%;
         overflow: hidden;
@@ -72,6 +73,100 @@ body {
         white-space: nowrap;
         width: 100%;
     }
+}
+
+.char-detail-page {
+    &>.character-container {
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        padding: 8px;
+        width: 100%;
+    }
+
+    &>div>.label {
+        align-items: center;
+        box-sizing: border-box;
+        display: flex;
+        flex-flow: row nowrap;
+        font-weight: bold;
+        height: 40px;
+        justify-content: flex-start;
+        padding: 8px;
+        text-transform: capitalize;
+        width: 100%;
+    }
+
+    &>div>.value:not(:has(ul)) {
+        align-items: center;
+        box-sizing: border-box;
+        display: flex;
+        height: 40px;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    &>div>.value:not(:has(ul)):not(:has(a)) {
+        opacity: 0.7;
+        padding: 8px;
+    }
+
+    &>div>.value:not(:has(ul)):has(a) {
+        padding: 0;
+    }
+
+    &>div>.value:not(:has(ul))>a {
+        box-sizing: border-box;
+        color: #09f;
+        display: block;
+        height: 100%;
+        overflow: hidden;
+        padding: 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+
+        &:hover {
+            background-color: #333;
+        }
+    }
+
+    &>div>.value>ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &>div>.value>ul>li {
+        display: block;
+        box-sizing: border-box;
+        height: 40px;
+        width: 100%;
+    }
+
+    &>div>.value>ul>li:not(:has(a)) {
+        height: auto;
+        opacity: 0.7;
+        padding: 8px;
+        width: 100%;
+    }
+
+    &>div>.value>ul>li>a {
+        box-sizing: border-box;
+        color: #09f;
+        display: block;
+        height: 100%;
+        overflow: hidden;
+        padding: 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+
+        &:hover {
+            background-color: #333;
+        }
+    }
+
 }
 
 .char-list-page {
@@ -103,6 +198,7 @@ body {
     &>.pagination>ul>li>a {
         align-items: center;
         box-sizing: border-box;
+        color: #09f;
         display: flex;
         flex-flow: row nowrap;
         height: 100%;
@@ -180,63 +276,59 @@ body {
         align-items: center;
         display: flex;
         flex-flow: row nowrap;
-        font-size: 100%;
+        font-size: 1rem;
         height: 40px;
         justify-content: flex-start;
         margin: 0;
         padding: 8px;
     }
-}
 
-.about {
-    align-items: center;
-    color: #ccc;
-    display: flex;
-    flex-flow: row nowrap;
-    gap: 8px;
-    height: 64px;
-    padding: 8px;
-    width: 200px;
-
-    &>.about-icon {
-        flex: none;
-        height: 64px;
-        width: 64px;
-    }
-
-    &>.about-icon>img {
-        display: block;
-        height: 100%;
-        width: 100%;
-    }
-
-    &>.about-text {
+    &>.about {
+        align-items: center;
+        color: #ccc;
         display: flex;
-        flex-flow: column nowrap;
-        gap: 0;
+        flex-flow: row nowrap;
+        gap: 8px;
+        height: 64px;
+        padding: 8px;
+        width: 200px;
+
+        &>.about-icon {
+            flex: none;
+            height: 64px;
+            width: 64px;
+        }
+
+        &>.about-icon>img {
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+
+        &>.about-text {
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 0;
+        }
+
+        & .brand {
+            font-weight: bold;
+        }
+
+        & .version {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        & a {
+            color: #09f;
+            font-size: 0.85rem;
+            outline-offset: 0;
+            text-decoration: underline;
+            white-space: nowrap;
+        }
     }
 
-    & .brand {
-        font-weight: bold;
-    }
-
-    & .version {
-        font-size: 0.85rem;
-        opacity: 0.7;
-    }
-
-    & a {
-        color: #09f;
-        font-size: 0.85rem;
-        outline-offset: 0;
-        text-decoration: underline;
-        white-space: nowrap;
-    }
-}
-
-
-a {
-    color: #09f;
 }
 
 .breadcrumb-list {
