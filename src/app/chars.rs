@@ -16,7 +16,7 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .clamp(0x0000, 0x10FFFF);
     let limit = 20_u32;
     ::topcoat::view::view! {
-        <div class="page">
+        <div class="page char-list-page">
             breadcrumbs(
                 items: vec![
                     ("/", None, "tofu"),
@@ -54,7 +54,7 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     </li>
                 }
             </ul>
-            <nav>
+            <nav class="pagination">
                 <ul>
                     if start == 0 {
                         <li>"Previous"</li>
