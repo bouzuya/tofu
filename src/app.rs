@@ -1,14 +1,10 @@
-use std::sync::atomic::AtomicU16;
-
 use crate::{CodePoint, components::breadcrumbs};
 
 mod blocks;
 mod chars;
-mod examples;
 
 struct AppContext {
     pub blocks: Vec<super::Block>,
-    pub count: AtomicU16,
     pub names_list: std::collections::HashMap<CodePoint, super::CharEntry>,
 }
 
@@ -21,11 +17,7 @@ pub fn router(
     use topcoat::session::RouterBuilderSessionExt as _;
 
     ::topcoat::router::module_router!()
-        .app_context(AppContext {
-            blocks,
-            count: AtomicU16::new(0),
-            names_list,
-        })
+        .app_context(AppContext { blocks, names_list })
         .cookies()
         .sessions(::topcoat::session::SessionConfig::default())
         .app_context(::topcoat::cookie::Key::generate())
@@ -76,7 +68,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             )
             <h1>"tofu"</h1>
             <form method="get" action="/">
-                <input name="q" type="text" />
+                <input name="q" placeholder="A, あ, 📛, etc." type="text" />
                 <button type="submit">"Search"</button>
             </form>
             <h2>"Menu"</h2>
