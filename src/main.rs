@@ -141,10 +141,10 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<CodePoint, CharEntr
                         // do nothing
                     }
                     Some(cross_ref) => {
-                        if let Some((name, code)) = cross_ref.rsplit_once(" - ") {
-                            if let Some(code_point) = CodePoint::from_str_without_u_plus(code) {
-                                cross_refs.push((name.to_string(), code_point));
-                            }
+                        if let Some((name, code)) = cross_ref.rsplit_once(" - ")
+                            && let Some(code_point) = CodePoint::from_str_without_u_plus(code)
+                        {
+                            cross_refs.push((name.to_string(), code_point));
                         }
                     }
                 }

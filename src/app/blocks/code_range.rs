@@ -16,15 +16,15 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         return Err(::topcoat::router::error::not_found().into());
     }
     let start_code = CodePoint::from_str_without_u_plus(parsed[0])
-        .ok_or_else(|| ::topcoat::router::error::not_found())?;
+        .ok_or_else(::topcoat::router::error::not_found)?;
     let end_code = CodePoint::from_str_without_u_plus(parsed[1])
-        .ok_or_else(|| ::topcoat::router::error::not_found())?;
+        .ok_or_else(::topcoat::router::error::not_found)?;
     let app_context = ::topcoat::context::app_context::<crate::app::AppContext>(cx);
     let block = app_context
         .blocks
         .iter()
         .find(|block| block.code_range == (start_code..=end_code))
-        .ok_or_else(|| ::topcoat::router::error::not_found())?;
+        .ok_or_else(::topcoat::router::error::not_found)?;
     let block_url = format!(
         "/blocks/{}..{}",
         start_code.to_string_without_u_plus(),

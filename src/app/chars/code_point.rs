@@ -9,20 +9,20 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let code_point = ::topcoat::router::path_param::<CodePoint>(cx)?;
     let char_ = code_point
         .to_char()
-        .ok_or_else(|| ::topcoat::router::error::not_found())?;
+        .ok_or_else(::topcoat::router::error::not_found)?;
     let app_context = ::topcoat::context::app_context::<AppContext>(cx);
     let block = app_context
         .blocks
         .iter()
-        .find(|block| block.code_range.contains(&code_point))
-        .ok_or_else(|| ::topcoat::router::error::not_found())?;
+        .find(|block| block.code_range.contains(code_point))
+        .ok_or_else(::topcoat::router::error::not_found)?;
     let char_url = format!("/chars/{}", code_point.to_string_without_u_plus());
     let char_text = format!(
         "{} {}",
         code_point.to_string_with_u_plus(),
         app_context
             .names_list
-            .get(&code_point)
+            .get(code_point)
             .map(|entry| &entry.name)
             .unwrap_or(&"<unknown>".to_string())
     );
@@ -42,7 +42,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 <div class="value">
                     match app_context
                         .names_list
-                        .get(&code_point)
+                        .get(code_point)
                         .map(|entry| &entry.aliases) {
                         Some(aliases) => {
                             if !aliases.is_empty() {
@@ -84,7 +84,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 <div class="value">
                     match app_context
                         .names_list
-                        .get(&code_point)
+                        .get(code_point)
                         .map(|entry| &entry.comments) {
                         Some(comments) => {
                             if !comments.is_empty() {
@@ -108,7 +108,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 <div class="value">
                     match app_context
                         .names_list
-                        .get(&code_point)
+                        .get(code_point)
                         .map(|entry| &entry.cross_refs) {
                         Some(cross_refs) => {
                             if !cross_refs.is_empty() {
