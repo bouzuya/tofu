@@ -9,8 +9,8 @@ async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page block-list-page">
             breadcrumbs(
                 items: vec![
-                    ("/", None, "tofu"),
-                    ("/blocks", None, "Blocks")
+                    ("/lab/tofu", None, "tofu"),
+                    ("/lab/tofu/blocks", None, "Blocks")
                 ]
             )
             <h1>"Blocks"</h1>
@@ -19,7 +19,7 @@ async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     <li>
                         <a
                             href=(format!(
-                            "/blocks/{}..{}", block.code_range.start()
+                            "/lab/tofu/blocks/{}..{}", block.code_range.start()
                             .to_string_without_u_plus(), block.code_range.end()
                             .to_string_without_u_plus()
                         ))

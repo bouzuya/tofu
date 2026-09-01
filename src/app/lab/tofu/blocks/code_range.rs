@@ -26,7 +26,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .find(|block| block.code_range == (start_code..=end_code))
         .ok_or_else(::topcoat::router::error::not_found)?;
     let block_url = format!(
-        "/blocks/{}..{}",
+        "/lab/tofu/blocks/{}..{}",
         start_code.to_string_without_u_plus(),
         end_code.to_string_without_u_plus()
     );
@@ -40,8 +40,8 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page block-detail-page">
             breadcrumbs(
                 items: vec![
-                ("/", None, "tofu"),
-                ("/blocks", None, "Blocks"),
+                ("/lab/tofu", None, "tofu"),
+                ("/lab/tofu/blocks", None, "Blocks"),
                 (& block_url, None, &block_text),
             ]
             )
@@ -71,7 +71,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                             <li>
                                 <a
                                     href=(format!(
-                                    "/chars/{}", code_point.to_string_without_u_plus()
+                                    "/lab/tofu/chars/{}", code_point.to_string_without_u_plus()
                                 ))
                                 >
                                     character(

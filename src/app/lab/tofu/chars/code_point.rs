@@ -16,7 +16,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         .iter()
         .find(|block| block.code_range.contains(code_point))
         .ok_or_else(::topcoat::router::error::not_found)?;
-    let char_url = format!("/chars/{}", code_point.to_string_without_u_plus());
+    let char_url = format!("/lab/tofu/chars/{}", code_point.to_string_without_u_plus());
     let char_text = format!(
         "{} {}",
         code_point.to_string_with_u_plus(),
@@ -30,8 +30,8 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page char-detail-page">
             breadcrumbs(
                 items: vec![
-                ("/", None, "tofu"),
-                ("/chars", None, "Characters"),
+                ("/lab/tofu", None, "tofu"),
+                ("/lab/tofu/chars", None, "Characters"),
                 (& char_url, None, &char_text),
             ]
             )
@@ -66,7 +66,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 <div class="value">
                     <a
                         href=(format!(
-                    "/blocks/{}..{}", block.code_range.start()
+                    "/lab/tofu/blocks/{}..{}", block.code_range.start()
                     .to_string_without_u_plus(), block.code_range.end()
                     .to_string_without_u_plus()
                 ))
@@ -117,7 +117,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                                         <li>
                                             <a
                                                 href=(format!(
-                                            "/chars/{}", code_point.to_string_without_u_plus()
+                                            "/lab/tofu/chars/{}", code_point.to_string_without_u_plus()
                                         ))
                                             >
                                                 character(

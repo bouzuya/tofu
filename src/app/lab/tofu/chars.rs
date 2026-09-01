@@ -19,8 +19,8 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page char-list-page">
             breadcrumbs(
                 items: vec![
-                    ("/", None, "tofu"),
-                    ("/chars", None, "Characters")
+                    ("/lab/tofu", None, "tofu"),
+                    ("/lab/tofu/chars", None, "Characters")
                 ]
             )
             <h1>"Characters"</h1>
@@ -39,7 +39,7 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     <li>
                         <a
                             href=(format!(
-                            "/chars/{}", code_point.to_string_without_u_plus()
+                            "/lab/tofu/chars/{}", code_point.to_string_without_u_plus()
                         ))
                         >
                             character(
@@ -62,7 +62,7 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                         <li>
                             <a
                                 href=(format!(
-                                "/chars?start={:04X}", start.saturating_sub(limit)
+                                "/lab/tofu/chars?start={:04X}", start.saturating_sub(limit)
                             ))
                             >
                                 "Previous"
@@ -75,7 +75,7 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                         <li>
                             <a
                                 href=(format!(
-                                "/chars?start={:04X}", start.saturating_add(limit)
+                                "/lab/tofu/chars?start={:04X}", start.saturating_add(limit)
                             ))
                             >
                                 "Next"
