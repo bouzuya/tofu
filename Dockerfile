@@ -25,8 +25,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=builder /app/target/release/tofu /app/tofu
-COPY --from=builder /app/target/release/assets /app/assets
+COPY --from=builder /app/target/release/assets /app/src/app/lab/tofu/assets
 ENV HOST=0.0.0.0
+ENV ORIGIN=http://localhost:3000
 ENV PORT=3000
 EXPOSE 3000
 CMD ["/app/tofu"]

@@ -13,14 +13,42 @@ pub fn router(
 ) -> ::topcoat::router::Router {
     use topcoat::asset::RouterBuilderAssetExt as _;
     use topcoat::cookie::RouterBuilderCookieExt as _;
+    use topcoat::router::RouterBuilderDiscoverExt as _;
     use topcoat::session::RouterBuilderSessionExt as _;
+
+    trait MyRouterBuilderExt {
+        fn my_assets(self) -> Self;
+    }
+
+    impl MyRouterBuilderExt for ::topcoat::router::RouterBuilder {
+        fn my_assets(self) -> Self {
+            if std::env::var("TOPCOAT_DEV_URL").is_ok() {
+                self.assets(::topcoat::asset::AssetBundle::load().unwrap())
+            } else {
+                // workaround for asset base path
+                self.assets(::topcoat::asset::AssetConfig::hosted_at(
+                    format!(
+                        "{}/lab/tofu/assets",
+                        std::env::var("ORIGIN").expect("not set ORIGIN env var")
+                    ),
+                    ::topcoat::asset::AssetBundle::load_dir("src/app/lab/tofu/assets").unwrap(),
+                ))
+                .discover()
+                .route(::topcoat::router::tower::TowerRoute::new(
+                    ::topcoat::router::Methods::Any,
+                    ::topcoat::router::Path::new("/lab/tofu/assets/{*rest}"),
+                    ::tower_http::services::ServeDir::new("src/app"),
+                ))
+            }
+        }
+    }
 
     ::topcoat::router::module_router!()
         .app_context(AppContext { blocks, names_list })
         .cookies()
         .sessions(::topcoat::session::SessionConfig::default())
         .app_context(::topcoat::cookie::Key::generate())
-        .assets(::topcoat::asset::AssetBundle::load().unwrap())
+        .my_assets()
         .build()
 }
 
