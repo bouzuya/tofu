@@ -60,10 +60,10 @@ async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
 
 #[::topcoat::router::layer]
 async fn log_layer(
-    cx: &mut ::topcoat::context::CxBuilder,
+    cx: &::topcoat::context::Cx,
     body: ::topcoat::router::Body,
     next: ::topcoat::router::Next<'_>,
-) -> ::topcoat::Result<::topcoat::router::Response> {
+) -> ::topcoat::Result<::topcoat::router::response::Response> {
     let start = std::time::Instant::now();
     let response = next.run(cx, body).await?;
     let status = response.status();

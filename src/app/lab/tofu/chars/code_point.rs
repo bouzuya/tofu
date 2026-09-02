@@ -1,12 +1,14 @@
+use topcoat::router::error::RouterErrorExt;
+
 use crate::app::AppContext;
 use crate::components::{breadcrumbs, character};
 
-#[::topcoat::router::path_param(error = bad_request)]
-struct CodePoint(pub crate::code_point::CodePoint);
+::topcoat::router::path_param!(code_point: crate::code_point::CodePoint);
 
 #[::topcoat::router::page]
-async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
-    let code_point = ::topcoat::router::path_param::<CodePoint>(cx)?;
+async fn get_code_point<'a>(cx: &'a ::topcoat::context::Cx) -> ::topcoat::Result {
+    let code_point =
+        ::topcoat::router::path_param::<CodePoint>(cx).ok_or_bad_request("invalid code_point")?;
     let char_ = code_point
         .to_char()
         .ok_or_else(::topcoat::router::error::not_found)?;
@@ -35,7 +37,7 @@ async fn get_code_point(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 (& char_url, None, &char_text),
             ]
             )
-            <h1>(char_text)</h1>
+            <h1>(&char_text)</h1>
             <div class="character-container">character(c: char_, thumbnail: false)</div>
             <div>
                 <div class="label">"aliases:"</div>

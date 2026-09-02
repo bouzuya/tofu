@@ -1,14 +1,16 @@
+use topcoat::router::error::RouterErrorExt;
+
 use crate::{
     CodePoint,
     components::{breadcrumbs, character},
 };
 
-#[::topcoat::router::path_param(error = not_found)]
-struct CodeRange(String);
+::topcoat::router::path_param!(code_range: String);
 
 #[::topcoat::router::page]
 async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
-    let code_range_value = ::topcoat::router::path_param::<CodeRange>(cx)?;
+    let code_range_value =
+        ::topcoat::router::path_param::<CodeRange>(cx).ok_or_bad_request("invalid code_range")?;
     let parsed = code_range_value
         .split_terminator("..")
         .collect::<Vec<&str>>();
@@ -45,45 +47,48 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 (& block_url, None, &block_text),
             ]
             )
-            <h1>(block_text)</h1>
+            <h1>(&block_text)</h1>
             <ul>
                 for code_point_as_u32 in block
                     .code_range
                     .start()
                     .to_u32()..=block.code_range.end().to_u32() {
-                    let code_point = match CodePoint::from_u32(code_point_as_u32) {
-                        None => continue,
-                        Some(code_point) => code_point,
-                    };
-                    match app_context.names_list.get(&code_point) {
+                    match CodePoint::from_u32(code_point_as_u32) {
                         None => {
-                            <li>
-                                <span>
-                                    character(c: ' ', thumbnail: true)
-                                    " "
-                                    (code_point.to_string_with_u_plus())
-                                    " "
-                                    "<unknown>"
-                                </span>
-                            </li>
+
                         }
-                        Some(entry) => {
-                            <li>
-                                <a
-                                    href=(format!(
-                                    "/lab/tofu/chars/{}", code_point.to_string_without_u_plus()
-                                ))
-                                >
-                                    character(
-                                        c: code_point.to_char().unwrap_or(' '),
-                                        thumbnail: true
-                                    )
-                                    " "
-                                    (code_point.to_string_with_u_plus())
-                                    " "
-                                    (entry.name.to_ascii_uppercase())
-                                </a>
-                            </li>
+                        Some(code_point) => {
+                            match app_context.names_list.get(&code_point) {
+                                None => {
+                                    <li>
+                                        <span>
+                                            character(c: ' ', thumbnail: true)
+                                            " "
+                                            (code_point.to_string_with_u_plus())
+                                            " "
+                                            "<unknown>"
+                                        </span>
+                                    </li>
+                                }
+                                Some(entry) => {
+                                    <li>
+                                        <a
+                                            href=(format!(
+                                            "/lab/tofu/chars/{}", code_point.to_string_without_u_plus()
+                                        ))
+                                        >
+                                            character(
+                                                c: code_point.to_char().unwrap_or(' '),
+                                                thumbnail: true
+                                            )
+                                            " "
+                                            (code_point.to_string_with_u_plus())
+                                            " "
+                                            (entry.name.to_ascii_uppercase())
+                                        </a>
+                                    </li>
+                                }
+                            }
                         }
                     }
                 }
