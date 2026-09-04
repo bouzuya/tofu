@@ -32,7 +32,7 @@ async fn get_code_point<'a>(cx: &'a ::topcoat::context::Cx) -> ::topcoat::Result
         <div class="page char-detail-page">
             breadcrumbs(
                 items: vec![
-                ("/lab/tofu", None, "tofu"),
+                ("/lab/tofu", Some(::topcoat::asset::asset!("../../tofu.svg")), "tofu"),
                 ("/lab/tofu/chars", None, "Characters"),
                 (& char_url, None, &char_text),
             ]

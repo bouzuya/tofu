@@ -42,7 +42,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page block-detail-page">
             breadcrumbs(
                 items: vec![
-                ("/lab/tofu", None, "tofu"),
+                ("/lab/tofu", Some(::topcoat::asset::asset!("../../tofu.svg")), "tofu"),
                 ("/lab/tofu/blocks", None, "Blocks"),
                 (& block_url, None, &block_text),
             ]

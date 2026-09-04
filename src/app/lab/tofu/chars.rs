@@ -19,7 +19,7 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page char-list-page">
             breadcrumbs(
                 items: vec![
-                    ("/lab/tofu", None, "tofu"),
+                    ("/lab/tofu", Some(::topcoat::asset::asset!("../tofu.svg")), "tofu"),
                     ("/lab/tofu/chars", None, "Characters")
                 ]
             )

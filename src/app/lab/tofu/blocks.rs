@@ -9,7 +9,7 @@ async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         <div class="page block-list-page">
             breadcrumbs(
                 items: vec![
-                    ("/lab/tofu", None, "tofu"),
+                    ("/lab/tofu", Some(::topcoat::asset::asset!("../tofu.svg")), "tofu"),
                     ("/lab/tofu/blocks", None, "Blocks")
                 ]
             )
