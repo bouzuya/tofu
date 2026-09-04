@@ -72,6 +72,7 @@ async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
         <html>
             <head>
                 <meta charset="utf-8" />
+                <meta content="width=device-width, initial-scale=1" name="viewport" />
                 <link
                     href=(::topcoat::asset::asset!("./favicon.svg"))
                     rel="icon"
