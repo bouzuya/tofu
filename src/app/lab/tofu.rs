@@ -12,27 +12,26 @@ struct RootQueryParams {
 #[::topcoat::router::page]
 async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let query = ::topcoat::router::query_params::<RootQueryParams>(cx)?;
-    let names_list = &::topcoat::context::app_context::<AppContext>(cx).names_list;
+    let app_context = ::topcoat::context::app_context::<AppContext>(cx);
+    let names_list = &app_context.names_list;
+    let readings = &app_context.readings;
     match &query.q {
         Some(s) if s.chars().count() == 1 => match s.chars().next() {
             None => {}
             Some(c) => {
                 let code_point = CodePoint::from_char(c);
-                match names_list.get(&code_point) {
-                    Some(_entry) => {
-                        return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
-                            ::topcoat::router::error::redirect(&format!(
-                                "/lab/tofu/chars/{}",
-                                code_point.to_string_without_u_plus()
-                            ))
-                            .into(),
-                        );
-                    }
-                    None => {
-                        return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
-                            ::topcoat::router::error::not_found().into(),
-                        );
-                    }
+                if names_list.get(&code_point).is_some() || readings.get(&code_point).is_some() {
+                    return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
+                        ::topcoat::router::error::redirect(&format!(
+                            "/lab/tofu/chars/{}",
+                            code_point.to_string_without_u_plus()
+                        ))
+                        .into(),
+                    );
+                } else {
+                    return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
+                        ::topcoat::router::error::not_found().into(),
+                    );
                 }
             }
         },
@@ -59,6 +58,15 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             <ul>
                 <li>
                     <a
+                        href="https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        "https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
+                    </a>
+                </li>
+                <li>
+                    <a
                         href="https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -68,11 +76,11 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 </li>
                 <li>
                     <a
-                        href="https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
+                        href="https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        "https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
+                        "https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip"
                     </a>
                 </li>
             </ul>

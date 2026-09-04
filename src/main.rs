@@ -8,7 +8,8 @@ pub use crate::code_point::CodePoint;
 async fn main() {
     let blocks = fetch_blocks().await.unwrap();
     let names_list = fetch_names_list().await.unwrap();
-    ::topcoat::start(self::app::router(blocks, names_list))
+    let readings = fetch_readings().await.unwrap();
+    ::topcoat::start(self::app::router(blocks, names_list, readings))
         .await
         .unwrap();
 }
@@ -167,6 +168,69 @@ fn parse_names_list(text: &str) -> std::collections::HashMap<CodePoint, CharEntr
     }
 
     names
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct Readings {
+    code_point: CodePoint,
+    japanese: Option<String>,
+    japanese_kun: Option<String>,
+    japanese_on: Option<String>,
+}
+
+async fn fetch_readings()
+-> Result<std::collections::HashMap<CodePoint, Readings>, Box<dyn std::error::Error + Send + Sync>>
+{
+    let text = include_str!("../ucd/Unihan_Readings.txt");
+    Ok(parse_readings(&text))
+}
+
+fn parse_readings(text: &str) -> std::collections::HashMap<CodePoint, Readings> {
+    let mut readings = std::collections::HashMap::new();
+    for line in text.lines() {
+        match line.split_once('\t') {
+            None => {
+                // do nothing
+            }
+            Some((code_point_str, rest)) => {
+                match CodePoint::from_str_with_u_plus(code_point_str) {
+                    None => {
+                        // do nothing
+                    }
+                    Some(code_point) => {
+                        match rest.split_once('\t') {
+                            None => {
+                                // do nothing
+                            }
+                            Some((key, value)) => {
+                                let readings = readings.entry(code_point).or_insert(Readings {
+                                    code_point,
+                                    japanese: None,
+                                    japanese_kun: None,
+                                    japanese_on: None,
+                                });
+                                match key {
+                                    "kJapanese" => {
+                                        readings.japanese = Some(value.to_string());
+                                    }
+                                    "kJapaneseKun" => {
+                                        readings.japanese_kun = Some(value.to_string());
+                                    }
+                                    "kJapaneseOn" => {
+                                        readings.japanese_on = Some(value.to_string());
+                                    }
+                                    _ => {
+                                        // do nothing
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    readings
 }
 
 #[cfg(test)]

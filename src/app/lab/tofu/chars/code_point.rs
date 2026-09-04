@@ -144,6 +144,33 @@ async fn get_code_point<'a>(cx: &'a ::topcoat::context::Cx) -> ::topcoat::Result
                     }
                 </div>
             </div>
+            <div>
+                <div class="label">"readings:"</div>
+                <div class="value">
+                    match app_context
+                        .readings
+                        .get(code_point) {
+                        Some(readings) => {
+                            if readings.japanese.is_none() && readings.japanese_kun.is_none() && readings.japanese_on.is_none() {
+                                "(none)"
+                            } else {
+                                <ul>
+                                    for it in [
+                                        format!("kJapanese: {}", readings.japanese.as_deref().unwrap_or("<none>")),
+                                        format!("kJapaneseKun: {}", readings.japanese_kun.as_deref().unwrap_or("<none>")),
+                                        format!("kJapaneseOn: {}", readings.japanese_on.as_deref().unwrap_or("<none>")),
+                                    ] {
+                                        <li>(it)</li>
+                                    }
+                                </ul>
+                            }
+                        }
+                        None => {
+                            "(none)"
+                        }
+                    }
+                </div>
+            </div>
         </div>
     }
 }

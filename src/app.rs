@@ -5,11 +5,13 @@ use crate::CodePoint;
 struct AppContext {
     pub blocks: Vec<super::Block>,
     pub names_list: std::collections::HashMap<CodePoint, super::CharEntry>,
+    pub readings: std::collections::HashMap<CodePoint, super::Readings>,
 }
 
 pub fn router(
     blocks: Vec<super::Block>,
     names_list: std::collections::HashMap<CodePoint, super::CharEntry>,
+    readings: std::collections::HashMap<CodePoint, super::Readings>,
 ) -> ::topcoat::router::Router {
     use topcoat::asset::RouterBuilderAssetExt as _;
     use topcoat::cookie::RouterBuilderCookieExt as _;
@@ -44,7 +46,11 @@ pub fn router(
     }
 
     ::topcoat::router::module_router!()
-        .app_context(AppContext { blocks, names_list })
+        .app_context(AppContext {
+            blocks,
+            names_list,
+            readings,
+        })
         .cookies()
         .sessions(::topcoat::session::SessionConfig::default())
         .app_context(::topcoat::cookie::Key::generate())
