@@ -20,9 +20,7 @@ struct Block {
 }
 
 async fn fetch_blocks() -> Result<Vec<Block>, Box<dyn std::error::Error + Send + Sync>> {
-    let response =
-        ::reqwest::get("https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt").await?;
-    let text = response.text().await?;
+    let text = include_str!("../ucd/Blocks.txt");
 
     let mut blocks = vec![];
     for line in text.lines() {
@@ -63,9 +61,7 @@ struct CharEntry {
 async fn fetch_names_list()
 -> Result<std::collections::HashMap<CodePoint, CharEntry>, Box<dyn std::error::Error + Send + Sync>>
 {
-    let response =
-        ::reqwest::get("https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt").await?;
-    let text = response.text().await?;
+    let text = include_str!("../ucd/NamesList.txt");
     Ok(parse_names_list(&text))
 }
 

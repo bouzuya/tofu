@@ -5,7 +5,6 @@ publish = false
 version = "1.0.0"
 
 [dependencies]
-reqwest = "0.13.4"
 serde = { version = "1.0.229", features = ["derive"] }
 thiserror = "2.0.20"
 tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros"] }
@@ -15,3 +14,7 @@ tower-http = { version = "0.7.1", features = ["fs"] }
 
 [dev-dependencies]
 anyhow = "1.0.104"
+
+[build-dependencies]
+reqwest = "0.13.4"
+tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros"] }
