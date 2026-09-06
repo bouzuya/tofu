@@ -15,28 +15,32 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     let app_context = ::topcoat::context::app_context::<AppContext>(cx);
     let names_list = &app_context.names_list;
     let readings = &app_context.readings;
-    match &query.q {
-        Some(s) if s.chars().count() == 1 => match s.chars().next() {
-            None => {}
-            Some(c) => {
-                let code_point = CodePoint::from_char(c);
-                if names_list.get(&code_point).is_some() || readings.get(&code_point).is_some() {
-                    return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
-                        ::topcoat::router::error::redirect(&format!(
-                            "/lab/tofu/chars/{}",
-                            code_point.to_string_without_u_plus()
-                        ))
-                        .into(),
-                    );
-                } else {
-                    return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
-                        ::topcoat::router::error::not_found().into(),
-                    );
-                }
+    let q_code_point = match &query.q {
+        Some(s) if s.chars().count() == 1 => s.chars().next().map(CodePoint::from_char),
+        Some(s) => CodePoint::from_str_with_u_plus(s),
+        None => None,
+    };
+    match q_code_point {
+        Some(code_point) => {
+            if names_list.get(&code_point).is_some() || readings.get(&code_point).is_some() {
+                return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
+                    ::topcoat::router::error::redirect(&format!(
+                        "/lab/tofu/chars/{}",
+                        code_point.to_string_without_u_plus()
+                    ))
+                    .into(),
+                );
+            } else {
+                return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
+                    ::topcoat::router::error::not_found().into(),
+                );
             }
-        },
-        Some(_) | None => {}
+        }
+        None => {
+            // do nothing
+        }
     }
+
     let version = env!("CARGO_PKG_VERSION");
 
     ::topcoat::view::view! {
@@ -46,7 +50,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
             )
             <h1>"tofu"</h1>
             <form method="get" action="/lab/tofu">
-                <input name="q" placeholder="A, あ, 📛, etc." type="text" />
+                <input name="q" placeholder="A, あ, 📛, U+3042, etc." type="text" />
                 <button type="submit">"Search"</button>
             </form>
             <h2>"Menu"</h2>
