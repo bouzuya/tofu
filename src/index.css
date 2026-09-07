@@ -265,6 +265,14 @@ body {
         padding: 4px 16px;
         width: 100%;
 
+        &:focus-visible:active,
+        &:focus:active,
+        &:hover:active,
+        &:active {
+            box-shadow: none;
+            transform: none;
+        }
+
         &:focus-visible,
         &:hover {
             box-shadow: 3px 3px #ccc;
