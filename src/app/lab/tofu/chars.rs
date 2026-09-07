@@ -1,9 +1,6 @@
 mod code_point;
 
-use crate::{
-    CharEntry,
-    components::{breadcrumbs, character},
-};
+use crate::components::{breadcrumbs, character};
 
 #[::topcoat::router::query_params(error = bad_request)]
 struct GetCharsParams {
