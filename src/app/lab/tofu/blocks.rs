@@ -10,7 +10,7 @@ async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::top
             breadcrumbs(
                 items: vec![
                     ("/lab/tofu", Some(::topcoat::asset::asset!("../tofu.svg")), "tofu"),
-                    ("/lab/tofu/blocks", None, "Blocks")
+                    ("/lab/tofu/blocks", None, "Blocks"),
                 ]
             )
             <h1>"Blocks"</h1>
@@ -19,15 +19,12 @@ async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::top
                     <li>
                         <a
                             href=(format!(
-                            "/lab/tofu/blocks/{}..{}", block.code_range.start()
-                            .to_string_without_u_plus(), block.code_range.end()
-                            .to_string_without_u_plus()
-                        ))
+                                "/lab/tofu/blocks/{}..{}",
+                                block.code_range.start().to_string_without_u_plus(),
+                                block.code_range.end().to_string_without_u_plus(),
+                            ))
                         >
-                            (block
-                                .code_range
-                                .start()
-                                .to_string_with_u_plus())
+                            (block.code_range.start().to_string_with_u_plus())
                             ".."
                             (block.code_range.end().to_string_with_u_plus())
                             " "

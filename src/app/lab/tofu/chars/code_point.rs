@@ -34,10 +34,14 @@ async fn get_code_point(
         <div class="page char-detail-page">
             breadcrumbs(
                 items: vec![
-                ("/lab/tofu", Some(::topcoat::asset::asset!("../../tofu.svg")), "tofu"),
-                ("/lab/tofu/chars", None, "Characters"),
-                (& char_url, None, &char_text),
-            ]
+                    (
+                        "/lab/tofu",
+                        Some(::topcoat::asset::asset!("../../tofu.svg")),
+                        "tofu",
+                    ),
+                    ("/lab/tofu/chars", None, "Characters"),
+                    (&char_url, None, &char_text),
+                ]
             )
             <h1>(&char_text)</h1>
             <div class="character-container">character(c: char_, thumbnail: false)</div>
@@ -70,10 +74,10 @@ async fn get_code_point(
                 <div class="value">
                     <a
                         href=(format!(
-                    "/lab/tofu/blocks/{}..{}", block.code_range.start()
-                    .to_string_without_u_plus(), block.code_range.end()
-                    .to_string_without_u_plus()
-                ))
+                            "/lab/tofu/blocks/{}..{}",
+                            block.code_range.start().to_string_without_u_plus(),
+                            block.code_range.end().to_string_without_u_plus(),
+                        ))
                     >
                         (block.code_range.start().to_string_with_u_plus())
                         ".."
@@ -121,8 +125,9 @@ async fn get_code_point(
                                         <li>
                                             <a
                                                 href=(format!(
-                                            "/lab/tofu/chars/{}", code_point.to_string_without_u_plus()
-                                        ))
+                                                    "/lab/tofu/chars/{}",
+                                                    code_point.to_string_without_u_plus(),
+                                                ))
                                             >
                                                 character(
                                                     c: code_point.to_char().unwrap_or(' '),
@@ -149,18 +154,27 @@ async fn get_code_point(
             <div>
                 <div class="label">"readings:"</div>
                 <div class="value">
-                    match app_context
-                        .readings
-                        .get(code_point) {
+                    match app_context.readings.get(code_point) {
                         Some(readings) => {
-                            if readings.japanese.is_none() && readings.japanese_kun.is_none() && readings.japanese_on.is_none() {
+                            if readings.japanese.is_none()
+                                && readings.japanese_kun.is_none()
+                                && readings.japanese_on.is_none() {
                                 "(none)"
                             } else {
                                 <ul>
                                     for it in [
-                                        format!("kJapanese: {}", readings.japanese.as_deref().unwrap_or("<none>")),
-                                        format!("kJapaneseKun: {}", readings.japanese_kun.as_deref().unwrap_or("<none>")),
-                                        format!("kJapaneseOn: {}", readings.japanese_on.as_deref().unwrap_or("<none>")),
+                                        format!(
+                                            "kJapanese: {}",
+                                            readings.japanese.as_deref().unwrap_or("<none>"),
+                                        ),
+                                        format!(
+                                            "kJapaneseKun: {}",
+                                            readings.japanese_kun.as_deref().unwrap_or("<none>"),
+                                        ),
+                                        format!(
+                                            "kJapaneseOn: {}",
+                                            readings.japanese_on.as_deref().unwrap_or("<none>"),
+                                        ),
                                     ] {
                                         <li>(it)</li>
                                     }

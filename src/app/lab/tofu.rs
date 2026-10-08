@@ -46,7 +46,9 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::
     Ok(::topcoat::view::view! {
         <div class="page home-page">
             breadcrumbs(
-                items: vec![("/lab/tofu", Some(::topcoat::asset::asset!("./tofu.svg")), "tofu")]
+                items: vec![
+                    ("/lab/tofu", Some(::topcoat::asset::asset!("./tofu.svg")), "tofu"),
+                ]
             )
             <h1>"tofu"</h1>
             <form method="get" action="/lab/tofu">

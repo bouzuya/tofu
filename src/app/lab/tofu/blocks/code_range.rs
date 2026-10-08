@@ -42,17 +42,21 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topc
         <div class="page block-detail-page">
             breadcrumbs(
                 items: vec![
-                ("/lab/tofu", Some(::topcoat::asset::asset!("../../tofu.svg")), "tofu"),
-                ("/lab/tofu/blocks", None, "Blocks"),
-                (& block_url, None, &block_text),
-            ]
+                    (
+                        "/lab/tofu",
+                        Some(::topcoat::asset::asset!("../../tofu.svg")),
+                        "tofu",
+                    ),
+                    ("/lab/tofu/blocks", None, "Blocks"),
+                    (&block_url, None, &block_text),
+                ]
             )
             <h1>(&block_text)</h1>
             <ul>
-                for code_point_as_u32 in block
+                for code_point_as_u32 in block.code_range.start().to_u32()..=block
                     .code_range
-                    .start()
-                    .to_u32()..=block.code_range.end().to_u32() {
+                    .end()
+                    .to_u32() {
                     match CodePoint::from_u32(code_point_as_u32) {
                         None => {
 
@@ -74,8 +78,9 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topc
                                     <li>
                                         <a
                                             href=(format!(
-                                            "/lab/tofu/chars/{}", code_point.to_string_without_u_plus()
-                                        ))
+                                                "/lab/tofu/chars/{}",
+                                                code_point.to_string_without_u_plus(),
+                                            ))
                                         >
                                             character(
                                                 c: code_point.to_char().unwrap_or(' '),
