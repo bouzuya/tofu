@@ -6,7 +6,9 @@ use crate::components::{breadcrumbs, character};
 ::topcoat::router::path_param!(code_point: crate::code_point::CodePoint);
 
 #[::topcoat::router::page]
-async fn get_code_point<'a>(cx: &'a ::topcoat::context::Cx) -> ::topcoat::Result {
+async fn get_code_point(
+    cx: &::topcoat::context::Cx,
+) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let code_point =
         ::topcoat::router::path_param::<CodePoint>(cx).ok_or_bad_request("invalid code_point")?;
     let char_ = code_point
@@ -28,7 +30,7 @@ async fn get_code_point<'a>(cx: &'a ::topcoat::context::Cx) -> ::topcoat::Result
             .map(|entry| &entry.name)
             .unwrap_or(&"<unknown>".to_string())
     );
-    ::topcoat::view::view! {
+    Ok(::topcoat::view::view! {
         <div class="page char-detail-page">
             breadcrumbs(
                 items: vec![
@@ -172,5 +174,5 @@ async fn get_code_point<'a>(cx: &'a ::topcoat::context::Cx) -> ::topcoat::Result
                 </div>
             </div>
         </div>
-    }
+    })
 }

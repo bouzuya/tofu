@@ -8,14 +8,14 @@ struct GetCharsParams {
 }
 
 #[::topcoat::router::page]
-async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let app_context = ::topcoat::context::app_context::<crate::app::AppContext>(cx);
     let params = ::topcoat::router::query_params::<GetCharsParams>(cx)?;
     let start = u32::from_str_radix(&params.start.clone().unwrap_or("0".to_string()), 16)
         .unwrap_or(0)
         .clamp(0x0000, 0x10FFFF);
     let limit = 20_u32;
-    ::topcoat::view::view! {
+    Ok(::topcoat::view::view! {
         <div class="page char-list-page">
             breadcrumbs(
                 items: vec![
@@ -82,5 +82,5 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 </ul>
             </nav>
         </div>
-    }
+    })
 }

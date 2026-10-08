@@ -8,7 +8,7 @@ use crate::{
 ::topcoat::router::path_param!(code_range: String);
 
 #[::topcoat::router::page]
-async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let code_range_value =
         ::topcoat::router::path_param::<CodeRange>(cx).ok_or_bad_request("invalid code_range")?;
     let parsed = code_range_value
@@ -38,7 +38,7 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
         end_code.to_string_with_u_plus(),
         block.block_name
     );
-    ::topcoat::view::view! {
+    Ok(::topcoat::view::view! {
         <div class="page block-detail-page">
             breadcrumbs(
                 items: vec![
@@ -94,5 +94,5 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 }
             </ul>
         </div>
-    }
+    })
 }

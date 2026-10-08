@@ -3,9 +3,9 @@ use crate::components::breadcrumbs;
 mod code_range;
 
 #[::topcoat::router::page]
-async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let app_context = ::topcoat::context::app_context::<crate::app::AppContext>(cx);
-    ::topcoat::view::view! {
+    Ok(::topcoat::view::view! {
         <div class="page block-list-page">
             breadcrumbs(
                 items: vec![
@@ -37,5 +37,5 @@ async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 }
             </ul>
         </div>
-    }
+    })
 }

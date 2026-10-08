@@ -59,21 +59,11 @@ pub fn router(
 }
 
 #[::topcoat::router::layout]
-async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
-    let content = match slot {
-        Err(error)
-            if error
-                .downcast_ref::<::topcoat::router::error::NotFoundError>()
-                .is_some() =>
-        {
-            ::topcoat::view::view! {
-                (::topcoat::router::StatusCode::NOT_FOUND)
-                "Not Found"
-            }
-        }
-        content => content,
-    }?;
-    ::topcoat::view::view! {
+async fn root_layout<'a>(
+    slot: ::topcoat::router::Slot<'a>,
+) -> ::topcoat::Result<impl ::topcoat::view::View> {
+    let content = slot;
+    Ok(::topcoat::view::view! {
         <!DOCTYPE html>
         <html>
             <head>
@@ -90,7 +80,7 @@ async fn root_layout(slot: ::topcoat::Result) -> ::topcoat::Result {
             </head>
             <body>(content)</body>
         </html>
-    }
+    })
 }
 
 #[::topcoat::router::layer]

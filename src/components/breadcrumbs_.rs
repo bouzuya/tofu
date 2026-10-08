@@ -1,8 +1,8 @@
 #[::topcoat::view::component]
 pub async fn breadcrumbs(
     items: Vec<(&str, Option<::topcoat::asset::Asset>, &str)>,
-) -> ::topcoat::Result {
-    ::topcoat::view::view! {
+) -> ::topcoat::Result<impl ::topcoat::view::View> {
+    Ok(::topcoat::view::view! {
         <nav class="breadcrumb-list">
             <ol>
                 for (href, asset, text) in items {
@@ -20,5 +20,5 @@ pub async fn breadcrumbs(
                 }
             </ol>
         </nav>
-    }
+    })
 }

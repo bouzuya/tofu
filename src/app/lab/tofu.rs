@@ -10,7 +10,7 @@ struct RootQueryParams {
 }
 
 #[::topcoat::router::page]
-async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
+async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let query = ::topcoat::router::query_params::<RootQueryParams>(cx)?;
     let app_context = ::topcoat::context::app_context::<AppContext>(cx);
     let names_list = &app_context.names_list;
@@ -23,7 +23,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
     match q_code_point {
         Some(code_point) => {
             if names_list.get(&code_point).is_some() || readings.get(&code_point).is_some() {
-                return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
+                return ::topcoat::Result::<_, ::topcoat::Error>::Err(
                     ::topcoat::router::error::redirect(&format!(
                         "/lab/tofu/chars/{}",
                         code_point.to_string_without_u_plus()
@@ -31,7 +31,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                     .into(),
                 );
             } else {
-                return ::topcoat::Result::<::topcoat::view::View, ::topcoat::Error>::Err(
+                return ::topcoat::Result::<_, ::topcoat::Error>::Err(
                     ::topcoat::router::error::not_found().into(),
                 );
             }
@@ -43,7 +43,7 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
 
     let version = env!("CARGO_PKG_VERSION");
 
-    ::topcoat::view::view! {
+    Ok(::topcoat::view::view! {
         <div class="page home-page">
             breadcrumbs(
                 items: vec![("/lab/tofu", Some(::topcoat::asset::asset!("./tofu.svg")), "tofu")]
@@ -114,5 +114,5 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result {
                 </div>
             </div>
         </div>
-    }
+    })
 }
