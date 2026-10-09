@@ -793,12 +793,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "http-range-header"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9171a2ea8a68358193d15dd5d70c1c10a2afc3e7e4c5bc92bc9f025cebd7359c"
-
-[[package]]
 name = "httparse"
 version = "1.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2065,8 +2059,6 @@ dependencies = [
  "thiserror",
  "tokio",
  "topcoat",
- "tower",
- "tower-http 0.7.1",
  "zip",
 ]
 
@@ -2393,11 +2385,13 @@ dependencies = [
  "http",
  "http-body",
  "http-body-util",
+ "httpdate",
  "hyper",
  "hyper-util",
  "inventory",
  "ipnet",
  "matchit",
+ "mime_guess",
  "percent-encoding",
  "pin-project-lite",
  "ref-cast",
@@ -2407,6 +2401,7 @@ dependencies = [
  "serde_urlencoded",
  "tokio",
  "tokio-tungstenite",
+ "tokio-util",
  "topcoat-core",
  "topcoat-view",
  "tower",
@@ -2584,14 +2579,8 @@ dependencies = [
  "bitflags",
  "bytes",
  "futures-core",
- "futures-util",
  "http",
  "http-body",
- "http-body-util",
- "http-range-header",
- "httpdate",
- "mime",
- "mime_guess",
  "percent-encoding",
  "pin-project-lite",
  "tokio",
@@ -2667,9 +2656,9 @@ checksum = "b6f5e870be6c3b371b77fe0ee0bafb859fa4964b4404c27de1d380043c4dda20"
 
 [[package]]
 name = "unicase"
-version = "2.9.0"
+version = "2.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dbc4bc3a9f746d862c45cb89d705aa10f187bb96c76001afab07a0d35ce60142"
+checksum = "357cc3acc6a036009fd6c973ed009037c732d60d0b4f6c673e9041497482a28f"
 
 [[package]]
 name = "unicode-ident"

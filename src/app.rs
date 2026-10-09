@@ -13,10 +13,11 @@ pub fn router(
     names_list: std::collections::HashMap<CodePoint, super::CharEntry>,
     readings: std::collections::HashMap<CodePoint, super::Readings>,
 ) -> ::topcoat::router::Router {
-    use topcoat::asset::RouterBuilderAssetExt as _;
-    use topcoat::cookie::RouterBuilderCookieExt as _;
-    use topcoat::router::RouterBuilderDiscoverExt as _;
-    use topcoat::session::RouterBuilderSessionExt as _;
+    use ::topcoat::asset::RouterBuilderAssetExt as _;
+    use ::topcoat::cookie::RouterBuilderCookieExt as _;
+    use ::topcoat::router::RouterBuilderDirectoryExt as _;
+    use ::topcoat::router::RouterBuilderDiscoverExt as _;
+    use ::topcoat::session::RouterBuilderSessionExt as _;
 
     trait MyRouterBuilderExt {
         fn my_assets(self) -> Self;
@@ -35,12 +36,8 @@ pub fn router(
                     ),
                     ::topcoat::asset::AssetBundle::load_dir("src/app/lab/tofu/assets").unwrap(),
                 ))
+                .serve_dir("/lab/tofu/assets/{*rest}", "src/app/lab/tofu/assets")
                 .discover()
-                .route(::topcoat::router::tower::TowerRoute::new(
-                    ::topcoat::router::Methods::Any,
-                    ::topcoat::router::Path::new("/lab/tofu/assets/{*rest}"),
-                    ::tower_http::services::ServeDir::new("src/app"),
-                ))
             }
         }
     }
