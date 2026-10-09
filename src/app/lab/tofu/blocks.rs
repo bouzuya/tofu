@@ -1,9 +1,9 @@
 use crate::components::breadcrumbs;
 
-mod code_range;
+pub mod code_range;
 
 #[::topcoat::router::page]
-async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
+pub async fn page(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let app_context = ::topcoat::context::app_context::<crate::app::AppContext>(cx);
     Ok(::topcoat::view::view! {
         <div class="page block-list-page">
@@ -18,10 +18,15 @@ async fn get_blocks(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::top
                 for block in &app_context.blocks {
                     <li>
                         <a
-                            href=(format!(
-                                "/lab/tofu/blocks/{}..{}",
-                                block.code_range.start().to_string_without_u_plus(),
-                                block.code_range.end().to_string_without_u_plus(),
+                            href=(::topcoat::router::href!(
+                                crate::app::lab::tofu::blocks::code_range::page,
+                                crate::app::lab::tofu::blocks::code_range::CodeRange(
+                                    format!(
+                                        "{}..{}",
+                                        block.code_range.start().to_string_without_u_plus(),
+                                        block.code_range.end().to_string_without_u_plus(),
+                                    ),
+                                ),
                             ))
                         >
                             (block.code_range.start().to_string_with_u_plus())

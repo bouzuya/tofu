@@ -1,14 +1,15 @@
-mod code_point;
+pub mod code_point;
 
 use crate::components::{breadcrumbs, character};
 
 #[::topcoat::router::query_params(error = bad_request)]
-struct GetCharsParams {
-    start: Option<String>,
+#[derive(serde::Serialize)]
+pub struct GetCharsParams {
+    pub start: Option<String>,
 }
 
 #[::topcoat::router::page]
-async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
+pub async fn page(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let app_context = ::topcoat::context::app_context::<crate::app::AppContext>(cx);
     let params = ::topcoat::router::query_params::<GetCharsParams>(cx)?;
     let start = u32::from_str_radix(&params.start.clone().unwrap_or("0".to_string()), 16)
@@ -39,9 +40,11 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topc
                     .take(usize::try_from(limit).expect("limit is too large")) {
                     <li>
                         <a
-                            href=(format!(
-                                "/lab/tofu/chars/{}",
-                                code_point.to_string_without_u_plus(),
+                            href=(::topcoat::router::href!(
+                                crate::app::lab::tofu::chars::code_point::page,
+                                crate::app::lab::tofu::chars::code_point::CodePoint(
+                                    code_point,
+                                ),
                             ))
                         >
                             character(
@@ -65,9 +68,12 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topc
                     } else {
                         <li>
                             <a
-                                href=(format!(
-                                    "/lab/tofu/chars?start={:04X}",
-                                    start.saturating_sub(limit),
+                                href=(::topcoat::router::href!(
+                                    crate::app::lab::tofu::chars::page,
+                                ).query(
+                                    GetCharsParams {
+                                        start: Some(format!("{:04X}", start.saturating_sub(limit))),
+                                    },
                                 ))
                             >
                                 "Previous"
@@ -79,9 +85,12 @@ async fn get_chars(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topc
                     } else {
                         <li>
                             <a
-                                href=(format!(
-                                    "/lab/tofu/chars?start={:04X}",
-                                    start.saturating_add(limit),
+                                href=(::topcoat::router::href!(
+                                    crate::app::lab::tofu::chars::page,
+                                ).query(
+                                    GetCharsParams {
+                                        start: Some(format!("{:04X}", start.saturating_add(limit))),
+                                    },
                                 ))
                             >
                                 "Next"

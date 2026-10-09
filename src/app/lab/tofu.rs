@@ -57,8 +57,24 @@ async fn root(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::
             </form>
             <h2>"Menu"</h2>
             <ul>
-                <li><a href="/lab/tofu/blocks">"Blocks"</a></li>
-                <li><a href="/lab/tofu/chars">"Characters"</a></li>
+                <li>
+                    <a
+                        href=(::topcoat::router::href!(
+                            crate::app::lab::tofu::blocks::page,
+                        ))
+                    >
+                        "Blocks"
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href=(::topcoat::router::href!(
+                            crate::app::lab::tofu::chars::page,
+                        ))
+                    >
+                        "Characters"
+                    </a>
+                </li>
             </ul>
             <h2>"Data Sources"</h2>
             <ul>

@@ -5,10 +5,10 @@ use crate::{
     components::{breadcrumbs, character},
 };
 
-::topcoat::router::path_param!(code_range: String);
+::topcoat::router::module_param!(pub code_range: String);
 
 #[::topcoat::router::page]
-async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
+pub async fn page(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let code_range_value =
         ::topcoat::router::path_param::<CodeRange>(cx).ok_or_bad_request("invalid code_range")?;
     let parsed = code_range_value
@@ -77,9 +77,11 @@ async fn get_block(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topc
                                 Some(entry) => {
                                     <li>
                                         <a
-                                            href=(format!(
-                                                "/lab/tofu/chars/{}",
-                                                code_point.to_string_without_u_plus(),
+                                            href=(::topcoat::router::href!(
+                                                crate::app::lab::tofu::chars::code_point::page,
+                                                crate::app::lab::tofu::chars::code_point::CodePoint(
+                                                    code_point,
+                                                ),
                                             ))
                                         >
                                             character(

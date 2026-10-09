@@ -3,12 +3,10 @@ use topcoat::router::error::RouterErrorExt;
 use crate::app::AppContext;
 use crate::components::{breadcrumbs, character};
 
-::topcoat::router::path_param!(code_point: crate::code_point::CodePoint);
+::topcoat::router::module_param!(pub code_point: crate::code_point::CodePoint);
 
 #[::topcoat::router::page]
-async fn get_code_point(
-    cx: &::topcoat::context::Cx,
-) -> ::topcoat::Result<impl ::topcoat::view::View> {
+pub async fn page(cx: &::topcoat::context::Cx) -> ::topcoat::Result<impl ::topcoat::view::View> {
     let code_point =
         ::topcoat::router::path_param::<CodePoint>(cx).ok_or_bad_request("invalid code_point")?;
     let char_ = code_point
@@ -73,10 +71,15 @@ async fn get_code_point(
                 <div class="label">"block: "</div>
                 <div class="value">
                     <a
-                        href=(format!(
-                            "/lab/tofu/blocks/{}..{}",
-                            block.code_range.start().to_string_without_u_plus(),
-                            block.code_range.end().to_string_without_u_plus(),
+                        href=(::topcoat::router::href!(
+                            crate::app::lab::tofu::blocks::code_range::page,
+                            crate::app::lab::tofu::blocks::code_range::CodeRange(
+                                format!(
+                                    "{}..{}",
+                                    block.code_range.start().to_string_without_u_plus(),
+                                    block.code_range.end().to_string_without_u_plus(),
+                                ),
+                            ),
                         ))
                     >
                         (block.code_range.start().to_string_with_u_plus())
@@ -124,9 +127,11 @@ async fn get_code_point(
                                     for (name, code_point) in cross_refs {
                                         <li>
                                             <a
-                                                href=(format!(
-                                                    "/lab/tofu/chars/{}",
-                                                    code_point.to_string_without_u_plus(),
+                                                href=(::topcoat::router::href!(
+                                                    crate::app::lab::tofu::chars::code_point::page,
+                                                    crate::app::lab::tofu::chars::code_point::CodePoint(
+                                                        *code_point,
+                                                    ),
                                                 ))
                                             >
                                                 character(
