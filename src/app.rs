@@ -58,6 +58,11 @@ pub fn router(
         .build()
 }
 
+#[::topcoat::router::page]
+async fn page() -> ::topcoat::Result<()> {
+    Err(::topcoat::router::error::redirect("/lab/tofu").into())
+}
+
 #[::topcoat::router::layout]
 async fn root_layout<'a>(
     slot: ::topcoat::router::Slot<'a>,
